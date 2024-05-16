@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Login from "./components/Login&SignUp/Login";
 import SignUp from "./components/Login&SignUp/SignUp";
 import Landing from "./components/Landing";
@@ -29,6 +30,7 @@ function App() {
               <Route exact path="/" element={<Landing />} />
               <Route exact path="/about" element={<About />} />
             </Routes>
+            <Footer />
           </PostsProvider>
         </UserProvider>
       </Router>

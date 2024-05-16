@@ -2,7 +2,6 @@ export const postData = [
   {
     id: 1,
     title: "Delicious Homemade Pizza Recipe",
-    author: "ahmed",
     images: [
       "https://via.placeholder.com/150",
       "https://via.placeholder.com/150",
@@ -11,14 +10,14 @@ export const postData = [
     ],
     user: "ChefMaster",
     userId: 1,
-    publishDate: "April 23, 2000",
+
     postDate: "April 23,2024",
     description:
       "Learn how to make the perfect pizza at home with this easy recipe. It's a family favorite!",
   },
   {
     id: 2,
-    author: "ahmed",
+
     title: "Exploring Nature: Hiking Trails Guide",
     images: ["https://via.placeholder.com/150"],
     user: "NatureLover23",

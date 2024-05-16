@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { postData } from "../Feed/postsData";
 
 export const PostsContext = createContext();

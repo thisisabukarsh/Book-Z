@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useN } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+// import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   faCheck,
@@ -13,6 +13,8 @@ import Footer from "../../Footer";
 const USER_REGEX = /^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const PHONE_REGEX = /^(?:(?:(?:\+|00)962)|0)?7[789]\d{7}$/;
+
 const REGISTER_URL = "/register"; // check it from the back end
 
 const SignUp = () => {
@@ -31,6 +33,11 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
+
+  //use state foe phone number
+  const [phone, setPhone] = useState("");
+  const [validPhone, setValidPhone] = useState(false);
+  const [phoneFocus, setPhoneFocus] = useState(false);
 
   //use state for PWd state
   const [pwd, setPwd] = useState("");
@@ -62,10 +69,14 @@ const SignUp = () => {
   //use effect for check validation on the user when change
   useEffect(() => {
     const result = USER_REGEX.test(user);
-    console.log(result);
-    console.log(user);
     setValidName(result);
   }, [user]);
+
+  // useEffect for checking validation on the phone number when changed
+  useEffect(() => {
+    const result = PHONE_REGEX.test(phone);
+    setValidPhone(result);
+  }, [phone]);
 
   // use effect for check if the email matches the pattern
   useEffect(() => {
@@ -218,6 +229,43 @@ const SignUp = () => {
                   </span>{" "}
                   Please enter a valid email address in the format
                   'example@example.com'
+                </p>
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">
+                  Phone Number:{"  "}
+                  <span className={validPhone ? "valid" : "hide"}>
+                    <FontAwesomeIcon icon={faCheck} />
+                  </span>
+                  <span className={validPhone || !phone ? "hide" : "invalid"}>
+                    <FontAwesomeIcon icon={faTimes} />
+                  </span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  aria-invalid={validPhone ? "false" : "true"}
+                  aria-describedby="phonenote"
+                  onFocus={() => setPhoneFocus(true)}
+                  onBlur={() => setPhoneFocus(false)}
+                  className="form-control"
+                  placeholder="Enter phone number"
+                />
+                {/* Additional instructions for phone number */}
+                <p
+                  id="phonenote"
+                  className={
+                    phoneFocus && phone && !validPhone
+                      ? "instructions"
+                      : "offscreen"
+                  }
+                >
+                  <span>
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>{" "}
+                  Please enter a valid phone number.
                 </p>
               </div>
               <div className="form-group">

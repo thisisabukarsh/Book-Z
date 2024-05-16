@@ -5,12 +5,10 @@ import "./newPost.css";
 
 const NewPost = ({ onClose, onAddPost }) => {
   const { userData } = useContext(UserContext);
-  const { isAuthenticated, user } = userData;
+  const { user } = userData;
 
   const [title, setTitle] = useState("");
   const [images, setImages] = useState([]);
-  const [author, setAuthor] = useState("");
-  const [publishDate, setPublishDate] = useState("");
   const [description, setDescription] = useState("");
 
   const handleTitleChange = (e) => {
@@ -19,7 +17,12 @@ const NewPost = ({ onClose, onAddPost }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImages([...images, file]);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      // Update images state with the data URL of the uploaded image
+      setImages([...images, event.target.result]);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
@@ -31,7 +34,6 @@ const NewPost = ({ onClose, onAddPost }) => {
     images.forEach((image, index) => {
       formData.append(`image${index + 1}`, image);
     });
-    formData.append("author", author);
 
     formData.append("user", user.userName);
     formData.append("userId", user.userId);
@@ -42,14 +44,11 @@ const NewPost = ({ onClose, onAddPost }) => {
     const year = fullDate.getFullYear();
     const postDate = `${day}/${month}/${year}`;
     formData.append("postDate", postDate);
-    formData.append("publishDate", publishDate);
     formData.append("description", description);
 
     onAddPost(formData);
     setTitle("");
     setImages([]);
-    setAuthor("");
-    setPublishDate("");
     setDescription("");
   };
 
@@ -78,22 +77,6 @@ const NewPost = ({ onClose, onAddPost }) => {
             onChange={handleImageChange}
             accept="image/*"
             multiple
-            required
-          />
-          <label htmlFor="author">Author:</label>
-          <input
-            type="text"
-            id="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
-          />
-          <label htmlFor="publishDate">Publish Date:</label>
-          <input
-            type="text"
-            id="publishDate"
-            value={publishDate}
-            onChange={(e) => setPublishDate(e.target.value)}
             required
           />
           <label htmlFor="description">Description:</label>

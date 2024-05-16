@@ -168,38 +168,40 @@ const Profile = () => {
           {showResetPasswordDialog && (
             <ResetPasswordDialog onClose={() => closeDialog("resetPassword")} />
           )}
-          <div className="post-header">
-            <h3>Posts</h3>
-            <button onClick={() => openDialog("newPost")}>
-              <FaPlus /> Add New Post
-            </button>
-          </div>
-          <div className="posts">
-            {userPosts.map((post) => (
-              <div className="card" key={post.id}>
-                <Link to={`/post/${post.id}`} className="card-link">
-                  <img src={post.images[0]} alt={post.title} />
+          <div className="container">
+            <div className="post-header">
+              <h3>Posts</h3>
+              <button onClick={() => openDialog("newPost")}>
+                <FaPlus /> New Post
+              </button>
+            </div>
+            <div className="posts">
+              {userPosts.map((post) => (
+                <div className="card" key={post.id}>
+                  <Link to={`/post/${post.id}`} className="card-link">
+                    <img src={post.images[0]} alt={post.title} />
+                  </Link>
                   <div className="card-content">
+                    <div className="post-buttons">
+                      <button onClick={() => openDialog("editPost", post)}>
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeletePost(post.id)}>
+                        <FaTrash />
+                      </button>
+                    </div>
                     <h3>{post.title}</h3>
                   </div>
-                </Link>
-                <div className="post-buttons">
-                  <button onClick={() => openDialog("editPost", post)}>
-                    <FaEdit />
-                  </button>
-                  <button onClick={() => handleDeletePost(post.id)}>
-                    <FaTrash />
-                  </button>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       ) : (
         <div className="profile">
           <div className="profile-info">
             <div className="profile-photo">
-              <img src={defaultPhoto} alt="Profile Photo" />
+              <img src={defaultPhoto} alt="Profile " />
             </div>
             <div className="info">
               <h2>

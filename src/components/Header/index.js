@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 import Nav from "./Nav";
-import profilePic from "../../assets/default.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +41,9 @@ const Header = () => {
   return (
     <header className={`header ${isVisible ? "header-main" : ""} `}>
       {/* <div className="container"> */}
-      <div className="logo">Z-Book</div>
+      <Link to={`/home`} className="logo-link">
+        <div className="logo">Z-Book</div>
+      </Link>
       <Nav />
       <div
         className="links"

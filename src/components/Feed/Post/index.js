@@ -76,8 +76,6 @@ const PostPage = () => {
         </button>
       </div>
       <h1>{post.title}</h1>
-      <p>author: {post.author}</p>
-      <p>Publish Date: {post.publishDate}</p>
       <p>Description: {post.description}</p>
     </div>
   );

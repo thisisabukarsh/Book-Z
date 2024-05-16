@@ -23,6 +23,9 @@
   cursor: pointer;
 } */
 
+.logo-link {
+  text-decoration: none;
+}
 .header .container {
   margin: 0 auto;
   display: flex;
