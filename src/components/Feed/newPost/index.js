@@ -8,7 +8,7 @@ const NewPost = ({ onClose, onAddPost }) => {
   const { user } = userData;
 
   const [title, setTitle] = useState("");
-  const [images, setImages] = useState([]);
+  const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
 
   const handleTitleChange = (e) => {
@@ -19,8 +19,8 @@ const NewPost = ({ onClose, onAddPost }) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
-      // Update images state with the data URL of the uploaded image
-      setImages([...images, event.target.result]);
+      // Update image state with the data URL of the uploaded image
+      setImage(event.target.result);
     };
     reader.readAsDataURL(file);
   };
@@ -31,9 +31,7 @@ const NewPost = ({ onClose, onAddPost }) => {
     const id = Date.now();
     formData.append("id", id);
     formData.append("title", title);
-    images.forEach((image, index) => {
-      formData.append(`image${index + 1}`, image);
-    });
+    formData.append("image", image);
 
     formData.append("user", user.userName);
     formData.append("userId", user.userId);
@@ -48,7 +46,7 @@ const NewPost = ({ onClose, onAddPost }) => {
 
     onAddPost(formData);
     setTitle("");
-    setImages([]);
+    setImage("");
     setDescription("");
   };
 
@@ -70,7 +68,7 @@ const NewPost = ({ onClose, onAddPost }) => {
             onChange={handleTitleChange}
             required
           />
-          <label htmlFor="images">Upload Images:</label>
+          <label htmlFor="images">Upload Image:</label>
           <input
             type="file"
             id="images"

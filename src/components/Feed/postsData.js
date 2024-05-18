@@ -1,25 +1,29 @@
 export const postData = [
   {
-    id: 1,
+    id: 21,
     title: "Delicious Homemade Pizza Recipe",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "ChefMaster",
     userId: 1,
-
+    userNumber: +962788441313,
+    postDate: "April 23,2024",
+    description:
+      "Learn how to make the perfect pizza at home with this easy recipe. It's a family favorite!",
+  },
+  {
+    id: 1,
+    title: "Delicious Homemade Pizza Recipe",
+    image: "https://via.placeholder.com/150",
+    user: "ChefMaster",
+    userId: 4,
     postDate: "April 23,2024",
     description:
       "Learn how to make the perfect pizza at home with this easy recipe. It's a family favorite!",
   },
   {
     id: 2,
-
     title: "Exploring Nature: Hiking Trails Guide",
-    images: ["https://via.placeholder.com/150"],
+    image: "https://via.placeholder.com/150",
     user: "NatureLover23",
     userId: 2,
     publishDate: "April 23, 2000",
@@ -29,31 +33,18 @@ export const postData = [
   },
   {
     id: 3,
-    author: "ahmed",
     title: "Cozy Winter Soup Recipes",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/10",
-      "https://via.placeholder.com/1000",
-      "https://via.placeholder.com/1500",
-    ],
+    image: "https://via.placeholder.com/1500",
     user: "SoupMaster",
     userId: 3,
-    publishDate: "April 23, 2000",
     postDate: "April 23,2024",
     description:
       "Warm up this winter with these delicious and comforting soup recipes.",
   },
   {
     id: 4,
-    author: "ahmed",
     title: "DIY Home Decoration Ideas",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "DIYQueen",
     userId: 4,
     publishDate: "April 23, 2000",
@@ -63,14 +54,8 @@ export const postData = [
   },
   {
     id: 5,
-    author: "ahmed",
     title: "Healthy Breakfast Recipes",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "HealthNut",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -80,14 +65,8 @@ export const postData = [
   },
   {
     id: 6,
-    author: "ahmed",
     title: "Traveling on a Budget: Tips and Tricks",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "BudgetExplorer",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -97,14 +76,8 @@ export const postData = [
   },
   {
     id: 7,
-    author: "ahmed",
     title: "Beginner's Guide to Yoga",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "YogaEnthusiast",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -114,14 +87,8 @@ export const postData = [
   },
   {
     id: 8,
-    author: "ahmed",
     title: "Classic Movie Night: Must-Watch Films",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "MovieBuff",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -131,14 +98,8 @@ export const postData = [
   },
   {
     id: 9,
-    author: "ahmed",
     title: "Gardening Tips for Beginners",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "GreenThumb",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -148,14 +109,8 @@ export const postData = [
   },
   {
     id: 10,
-    author: "ahmed",
     title: "Quick and Easy Dinner Recipes",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "ChefExtraordinaire",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -165,14 +120,8 @@ export const postData = [
   },
   {
     id: 11,
-    author: "ahmed",
     title: "Photography 101: Basics for Beginners",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     publishDate: "April 23, 2000",
     postDate: "April 23,2024",
     description:
@@ -180,14 +129,8 @@ export const postData = [
   },
   {
     id: 12,
-    author: "ahmed",
     title: "Refreshing Summer Drinks",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "ThirstQuencher",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -197,31 +140,18 @@ export const postData = [
   },
   {
     id: 13,
-    author: "ahmed",
     title: "Mindfulness Meditation Techniques",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "ZenMaster",
     userId: 1,
-    publishDate: "April 23, 2000",
     postDate: "April 23,2024",
     description:
       "Achieve inner peace and tranquility with our mindfulness meditation techniques.",
   },
   {
     id: 14,
-    author: "ahmed",
     title: "DIY Crafts for Kids",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "CraftyKids",
     userId: 1,
     publishDate: "April 23, 2000",
@@ -231,14 +161,10 @@ export const postData = [
   },
   {
     id: 15,
-    author: "ahmed",
+    requests: "available",
+
     title: "Fitness Tips for Busy Professionals",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
+    image: "https://via.placeholder.com/150",
     user: "FitPro",
     userId: 1,
     publishDate: "April 23, 2000",

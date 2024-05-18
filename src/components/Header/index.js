@@ -71,9 +71,9 @@ const Header = () => {
           </ul>
         )}
       </div>
-      {/* <div className="profile-logo">
-        <img src={profilePic} alt="Profile" className="profile-pic" />
-      </div> */}
+      <div className="profile-logo">
+        <span>notinسشيسشسيسششيشسg</span>
+      </div>
       {/* </div> */}
     </header>
   );

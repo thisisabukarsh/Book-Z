@@ -179,7 +179,7 @@ const Profile = () => {
               {userPosts.map((post) => (
                 <div className="card" key={post.id}>
                   <Link to={`/post/${post.id}`} className="card-link">
-                    <img src={post.images[0]} alt={post.title} />
+                    <img src={post.image} alt={post.title} />
                   </Link>
                   <div className="card-content">
                     <div className="post-buttons">

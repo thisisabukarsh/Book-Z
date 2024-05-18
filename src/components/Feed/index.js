@@ -37,7 +37,7 @@ const Feed = () => {
   const addNewPost = (newPost) => {
     const postId = newPost.get("id");
     const title = newPost.get("title");
-    const images = newPost.getAll("images");
+    const image = newPost.getAll("image");
     // const imagesURL = images.map((image) => URL.createObjectURL(image));
 
     const author = newPost.get("author");
@@ -50,7 +50,7 @@ const Feed = () => {
     const postToAdd = {
       id: postId,
       title: title,
-      images: images,
+      image: image,
       author: author,
       user: user,
       publishDate: publishDate,
@@ -90,7 +90,7 @@ const Feed = () => {
           {filteredPosts.map((post) => (
             <Link to={`/post/${post.id}`} key={post.id} className="card-link">
               <div className="card">
-                <img src={post.images[0]} alt={post.title} />
+                <img src={post.image} alt={post.title} />
                 <div className="card-content">
                   <h3>{post.title}</h3>
                 </div>

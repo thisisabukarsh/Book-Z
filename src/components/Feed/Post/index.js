@@ -1,30 +1,33 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { PostsContext } from "../../Context/PostsContext ";
-import { useParams } from "react-router-dom";
+import UserContext from "../../Context/UserContext";
+import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "./post.css";
 
 const PostPage = () => {
-  const { posts } = useContext(PostsContext);
+  const { posts, setPosts, request, setRequest } = useContext(PostsContext);
+  const { userData } = useContext(UserContext);
+  const { user } = userData;
 
   const { postId } = useParams(); // Extracting post ID from URL params
   const post = posts.find((post) => post.id === parseInt(postId)); // Find post by postId
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFullView, setIsFullView] = useState(false);
 
-  const handleNextImage = (e) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % post.images.length);
-  };
+  // const handleNextImage = (e) => {
+  //   e.stopPropagation();
+  //   setCurrentImageIndex((prevIndex) => (prevIndex + 1) % post.images.length);
+  // };
 
-  const handlePreviousImage = (e) => {
-    e.stopPropagation();
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex - 1 + post.images.length) % post.images.length
-    );
-  };
+  // const handlePreviousImage = (e) => {
+  //   e.stopPropagation();
+  //   setCurrentImageIndex(
+  //     (prevIndex) => (prevIndex - 1 + post.images.length) % post.images.length
+  //   );
+  // };
 
   const handleGoBack = (e) => {
     e.stopPropagation();
@@ -35,8 +38,34 @@ const PostPage = () => {
     setIsFullView(!isFullView);
   };
 
+  // const [isRequestPending, setIsRequestPending] = useState(false);
+
+  // useEffect(() => {
+  //   // Find the user's request
+  //   const userRequest = request.find((req) => req.requesterId === user.userId);
+
+  //   // Check if request status is pending or not
+  //   if (userRequest && userRequest.status === "pending") {
+  //     setIsRequestPending(true);
+  //   } else {
+  //     setIsRequestPending(false);
+  //   }
+  // }, [request, user]);
+
+  // const handleRequestBook = () => {
+  //   setIsRequestPending(true);
+  //   const newRequest = {
+  //     reqId: Date.now(),
+  //     publisherId: post.userId,
+  //     postId: post.Id,
+  //     status: "pending",
+  //     requesterId: user.userId,
+  //   };
+  //   setRequest([...request, newRequest]);
+  // };
+
   if (!post) {
-    return <div>Loading...</div>; // edit on fetch data
+    return <div>Loading...</div>;
   }
 
   return (
@@ -54,15 +83,15 @@ const PostPage = () => {
         className={`image-container ${isFullView ? "full-view" : ""}`}
         onClick={handleToggleFullView}
       >
-        {post.images.map((image, index) => (
-          <img
-            key={index}
-            src={image}
-            alt={post.title}
-            className={index === currentImageIndex ? "" : "hidden"}
-          />
-        ))}
-        <button
+        {/* {post.images.map((image, index) => ( */}
+        <img
+          // key={index}
+          src={post.image}
+          alt={post.title}
+          // className={index === currentImageIndex ? "" : "hidden"}
+        />
+        {/* ))} */}
+        {/* <button
           onClick={(e) => handlePreviousImage(e)}
           className="slide-button previous"
         >
@@ -73,10 +102,17 @@ const PostPage = () => {
           className="slide-button next"
         >
           <FontAwesomeIcon icon={faArrowRight} />
-        </button>
+        </button> */}
       </div>
       <h1>{post.title}</h1>
       <p>Description: {post.description}</p>
+      <a
+        href={`https://wa.me/${post.userNumber}?text=Hello%20World`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <button className="btn-whatsApp">Chat in WhatsApp</button>
+      </a>
     </div>
   );
 };

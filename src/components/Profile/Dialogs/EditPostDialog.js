@@ -4,11 +4,7 @@ import React, { useState } from "react";
 const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
   // State variables to hold the edited post data
   const [editedTitle, setEditedTitle] = useState(post ? post.title : "");
-  const [editedImages, setEditedImages] = useState(post ? post.images : []);
-  const [editedAuthor, setEditedAuthor] = useState(post ? post.author : "");
-  const [editedPublishDate, setEditedPublishDate] = useState(
-    post ? post.publishDate : ""
-  );
+  const [editedImage, setEditedImage] = useState(null);
   const [editedDescription, setEditedDescription] = useState(
     post ? post.description : ""
   );
@@ -19,12 +15,15 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
     const updatedPost = {
       ...post,
       title: editedTitle,
-      images: editedImages,
-      author: editedAuthor,
-      publishDate: editedPublishDate,
+      image: editedImage,
       description: editedDescription,
     };
     onUpdatePost(updatedPost);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    setEditedImage(file);
   };
 
   return (
@@ -39,28 +38,14 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
           />
-          <label htmlFor="images">Images:</label>
+          <label htmlFor="image">Image:</label>
           <input
             type="file"
-            id="images"
+            id="image"
             accept="image/*"
             multiple
             required
-            onChange={(e) => setEditedImages(e.target.value)}
-          />
-          <label htmlFor="author">Author:</label>
-          <input
-            type="text"
-            id="author"
-            value={editedAuthor}
-            onChange={(e) => setEditedAuthor(e.target.value)}
-          />
-          <label htmlFor="publishDate">Publish Date:</label>
-          <input
-            type="text"
-            id="publishDate"
-            value={editedPublishDate}
-            onChange={(e) => setEditedPublishDate(e.target.value)}
+            onChange={handleImageChange}
           />
           <label htmlFor="description">Description:</label>
           <textarea
