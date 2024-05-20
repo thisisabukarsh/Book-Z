@@ -8,7 +8,7 @@ import UserContext from "../../Context/UserContext";
 // Importing dummy user data
 import { users } from "../user"; // Assuming your dummy data file is named dummyData.js
 
-const LOGIN_URL = "/auth"; // from backend
+const LOGIN_URL = "http://localhost:8081/login"; // from backend
 
 const Login = () => {
   const { login } = useContext(UserContext);
@@ -41,23 +41,32 @@ const Login = () => {
   const onSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission
 
-    // Find user with matching email
-    const user = users.find((user) => user.email === email);
+    try {
+      const response = await fetch(LOGIN_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password: pwd,
+        }),
+        credentials: "include", // Include credentials if needed
+      });
 
-    if (!user) {
-      setErrMsg("User not found");
-      return;
+      if (response.ok) {
+        // Assuming the backend returns the user data on successful login
+        const user = await response.json();
+        login(user);
+        navigate("/home");
+      } else {
+        const errorData = await response.json();
+        setErrMsg(errorData.message || "Login failed");
+      }
+    } catch (error) {
+      setErrMsg("No server response");
     }
-
-    // Check password
-    if (user.password !== pwd) {
-      setErrMsg("Incorrect password");
-      return;
-    }
-
-    // If email and password are correct, set authentication and save userData
-    login(user);
-    navigate("/home");
+    errRef.current.focus();
   };
 
   return (

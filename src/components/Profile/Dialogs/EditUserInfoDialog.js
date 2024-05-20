@@ -12,6 +12,7 @@ const EditUserInfoDialog = ({ onClose }) => {
 
   const { userData, setUserData } = useContext(UserContext);
   const { user } = userData;
+  const Edit_URL = `http://localhost:8081/patch/${user.userId}`;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +22,35 @@ const EditUserInfoDialog = ({ onClose }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Update user info in context and local storage
-    const updatedUser = { ...user, ...newUserInfo };
-    setUserData({ ...userData, user: updatedUser });
-    localStorage.setItem(
-      "userData",
-      JSON.stringify({ ...userData, user: updatedUser })
-    );
 
-    // Close the dialog
-    onClose();
+    try {
+      const updatedUserString = JSON.stringify(newUserInfo); // Convert to string
+      const response = await fetch(Edit_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: updatedUserString, // Send as a string
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const returnedUser = await response.json();
+        setUserData({ ...userData, user: returnedUser });
+        localStorage.setItem(
+          "userData",
+          JSON.stringify({ ...userData, user: returnedUser })
+        );
+        onClose();
+      } else {
+        const errorData = await response.json();
+        console.error("Error updating user:", errorData);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   };
 
   return (

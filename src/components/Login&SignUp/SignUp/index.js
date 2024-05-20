@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-// import axios from "axios";
+import { useState, useEffect, useRef, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   faCheck,
@@ -8,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./SignUp.css";
+import UserContext from "../../Context/UserContext";
 import Footer from "../../Footer";
 
 const USER_REGEX = /^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF-_]{3,23}$/;
@@ -15,7 +15,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const PHONE_REGEX = /^(?:(?:(?:\+|00)962)|0)?7[789]\d{7}$/;
 
-const REGISTER_URL = "/register"; // check it from the back end
+const REGISTER_URL = "http://localhost:8081/users/save"; // check it from the back end
 
 const SignUp = () => {
   //use ref to get focus on user and error
@@ -23,6 +23,7 @@ const SignUp = () => {
   const errRef = useRef();
   const location = useLocation();
   const navigate = useNavigate();
+  const { login } = useContext(UserContext);
 
   //use state for user state
   const [user, setUser] = useState("");
@@ -103,38 +104,53 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //if button enabled
+
+    // Validate user input
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
       setErrMsg("Please enter a valid username and password");
       return;
     }
+
+    const payload = {
+      userId: user,
+      userName: user,
+      password: pwd,
+      email: email,
+      rating: 0, // Default rating
+      phoneNumber: phone,
+      posts: [], // Default empty list
+      requestedBooks: [], // Default empty list
+    };
+
     try {
-      // const response = await axios.post(
-      //   REGISTER_URL,
-      //   JSON.stringify({ email, pwd }), //change it as on the back end
-      //   {
-      //     headers: { "Content-Type": "application/json" },
-      //     withCredentials: true,
-      //   }
-      // );
-      setSuccess(true);
-      // clear the inputs felids
-      setUser("");
-      setPwd("");
-      setMatchPwd("");
-      setEmail("");
+      const response = await fetch(REGISTER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        credentials: "include", // This is the fetch equivalent to withCredentials in axios
+      });
+
+      if (response.ok) {
+        login(payload);
+        setSuccess(true);
+        // Clear the input fields
+        setUser("");
+        setPwd("");
+        setMatchPwd("");
+        setEmail("");
+      } else if (response.status === 409) {
+        setErrMsg("User already exists");
+      } else {
+        setErrMsg("Registration Failed");
+      }
     } catch (err) {
-      // if (!err?.response) {
-      //   setErrMsg("No Server Response");
-      // } else if (err.response?.status === 409) {
-      //   setErrMsg("User already exists");
-      // } else {
-      //   setErrMsg("Registration Failed");
-      // }
-      // errRef.current.focus();
+      setErrMsg("No Server Response");
     }
+    errRef.current.focus();
   };
 
   return (

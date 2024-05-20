@@ -111,7 +111,8 @@ const Profile = () => {
         <div className="profile">
           <div className="profile-info">
             <div className="profile-photo">
-              <img src={user.profilePhoto} alt="Profile" />
+              {/* <img src={user.profilePhoto} alt="Profile" /> */}
+              <img src={defaultPhoto} alt="Profile" />
               <button className="edit-button">
                 <FaEdit className="edit-icon" />
                 Upload New photo
