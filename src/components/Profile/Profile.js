@@ -16,6 +16,11 @@ const Profile = () => {
   const { isAuthenticated, user } = userData;
 
   const { posts, setPosts } = useContext(PostsContext);
+  const [profilePhoto, setProfilePhoto] = useState(() => {
+    const savedPhoto = localStorage.getItem("profilePhoto");
+    return savedPhoto ? savedPhoto : defaultPhoto;
+  });
+
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
@@ -105,6 +110,19 @@ const Profile = () => {
     setShowNewPostDialog(false);
   };
 
+  const handleProfilePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const newProfilePhotoURL = reader.result;
+        setProfilePhoto(newProfilePhotoURL);
+        localStorage.setItem("profilePhoto", newProfilePhotoURL);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       {isAuthenticated ? (
@@ -112,11 +130,31 @@ const Profile = () => {
           <div className="profile-info">
             <div className="profile-photo">
               {/* <img src={user.profilePhoto} alt="Profile" /> */}
-              <img src={defaultPhoto} alt="Profile" />
-              <button className="edit-button">
+              {/* <img src={defaultPhoto} alt="Profile" /> */}
+              {/* <button className="edit-button">
                 <FaEdit className="edit-icon" />
                 Upload New photo
-              </button>
+              </button> */}
+              <img src={profilePhoto} alt="Profile" />
+              <input
+                type="file"
+                accept="image/*"
+                id="upload-photo"
+                style={{ display: "none" }}
+                onChange={handleProfilePhotoChange}
+              />
+              <label
+                htmlFor="upload-photo"
+                className=""
+                style={{
+                  color: "#64748b",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+              >
+                <FaEdit className="edit-icon" />
+                Upload New Photo
+              </label>
             </div>
             <div className="info">
               <h2>{user.userName}</h2>
