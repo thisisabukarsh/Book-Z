@@ -7,7 +7,7 @@ const Footer = () => {
     <div className=" footer">
       <p>
         &copy;{today.getFullYear()}
-        <span> Z-Book </span>All Rights Reserved.
+        <span> Book-Z </span>All Rights Reserved.
       </p>
     </div>
   );

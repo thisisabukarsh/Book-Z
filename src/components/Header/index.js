@@ -42,7 +42,7 @@ const Header = () => {
     <header className={`header ${isVisible ? "header-main" : ""} `}>
       {/* <div className="container"> */}
       <Link to={`/home`} className="logo-link">
-        <div className="logo">Z-Book</div>
+        <div className="logo">Book-Z</div>
       </Link>
       <Nav />
       <div
