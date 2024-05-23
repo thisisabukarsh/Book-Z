@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/axios";
 import "./Login.css";
 import Footer from "../../Footer";
 import UserContext from "../../Context/UserContext";
 
 // Importing dummy user data
-import { users } from "../user"; // Assuming your dummy data file is named dummyData.js
-
-const LOGIN_URL = "http://localhost:8081/login"; // from backend
+import { users } from "../user";
 
 const Login = () => {
   const { login } = useContext(UserContext);
   const location = useLocation();
   const currentPath = location.pathname;
-  const emailRef = useRef();
+  const UsernameRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [Username, setUsername] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
@@ -36,35 +34,30 @@ const Login = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [email, pwd]);
+  }, [Username, pwd]);
 
   const onSubmit = async (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
 
     try {
-      const response = await fetch(LOGIN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password: pwd,
-        }),
-        credentials: "include", // Include credentials if needed
+      const response = await api.post("/login", {
+        Username,
+        Password: pwd,
       });
 
-      if (response.ok) {
-        // Assuming the backend returns the user data on successful login
-        const user = await response.json();
+      if (response.status === 200) {
+        const user = response.data;
         login(user);
         navigate("/home");
       } else {
-        const errorData = await response.json();
-        setErrMsg(errorData.message || "Login failed");
+        setErrMsg("Login failed");
       }
     } catch (error) {
-      setErrMsg("No server response");
+      if (error.response && error.response.data) {
+        setErrMsg(error.response.data.message || "Login failed");
+      } else {
+        setErrMsg("No server response");
+      }
     }
     errRef.current.focus();
   };
@@ -82,15 +75,15 @@ const Login = () => {
         </p>
         <form onSubmit={onSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email Address:</label>
+            <label htmlFor="Username">Username:</label>
             <input
-              type="email"
-              id="email"
-              ref={emailRef}
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              type="text"
+              id="Username"
+              ref={UsernameRef}
+              onChange={(e) => setUsername(e.target.value)}
+              value={Username}
               className="form-control"
-              placeholder="Enter email"
+              placeholder="Enter Username"
               required
             />
           </div>
@@ -123,33 +116,3 @@ const Login = () => {
 };
 
 export default Login;
-
-//on submit change
-// e.preventDefault();
-//     try {
-//       const response = await axios.post(
-//         LOGIN_URL,
-//         JSON.stringify({ email, pwd }),
-//         {
-//           headers: { "Content-Type": "application/json" },
-//           withCredentials: true,
-//         }
-//       );
-//       const accessToken = response?.data?.accessToken;
-//       const roles = response?.data?.roles; // optional depend on backend
-//       setAuth({ email, pwd, accessToken, roles });
-//       setSuccess(true);
-//       setPwd("");
-//       setEmail("");
-//     } catch (err) {
-//       if (!err?.response) {
-//         setErrMsg("No Server Response");
-//       } else if (err.response?.status === 400) {
-//         setErrMsg("Missing Email or Password");
-//       } else if (err.response?.status === 401) {
-//         setErrMsg("Unauthorized");
-//       } else {
-//         setErrMsg("Login Failed");
-//       }
-//       errRef.current.focus();
-//     }

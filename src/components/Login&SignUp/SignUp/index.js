@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./SignUp.css";
+import api from "../../../api/axios";
 import UserContext from "../../Context/UserContext";
 import Footer from "../../Footer";
 
@@ -14,8 +15,6 @@ const USER_REGEX = /^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const PHONE_REGEX = /^(?:(?:(?:\+|00)962)|0)?7[789]\d{7}$/;
-
-const REGISTER_URL = "http://localhost:8081/users/save"; // check it from the back end
 
 const SignUp = () => {
   //use ref to get focus on user and error
@@ -105,7 +104,6 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate user input
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
@@ -114,30 +112,18 @@ const SignUp = () => {
     }
 
     const payload = {
-      userId: user,
-      userName: user,
-      password: pwd,
-      email: email,
-      rating: 0, // Default rating
-      phoneNumber: phone,
-      posts: [], // Default empty list
-      requestedBooks: [], // Default empty list
+      Username: user,
+      Password: pwd,
+      Email: email,
+      PhoneNumber: phone,
     };
 
     try {
-      const response = await fetch(REGISTER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        credentials: "include", // This is the fetch equivalent to withCredentials in axios
-      });
+      const response = await api.post("/register", payload);
 
-      if (response.ok) {
+      if (response.status === 200) {
         login(payload);
         setSuccess(true);
-        // Clear the input fields
         setUser("");
         setPwd("");
         setMatchPwd("");
