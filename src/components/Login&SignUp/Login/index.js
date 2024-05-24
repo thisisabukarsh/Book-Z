@@ -40,27 +40,27 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post("/login", {
-        Username,
-        Password: pwd,
-      });
+        const response = await api.post("/account/login", {
+            Username,
+            Password: pwd,
+        });
 
-      if (response.status === 200) {
-        const user = response.data;
-        login(user);
-        navigate("/home");
-      } else {
-        setErrMsg("Login failed");
-      }
+        if (response.status === 200) {
+            const user = response.data;
+            login(user);
+            navigate("/home");
+        } else {
+            setErrMsg("Login failed");
+        }
     } catch (error) {
-      if (error.response && error.response.data) {
-        setErrMsg(error.response.data.message || "Login failed");
-      } else {
-        setErrMsg("No server response");
-      }
+        if (error.response && error.response.data) {
+            setErrMsg(error.response.data.message || "Login failed");
+        } else {
+            setErrMsg("No server response");
+        }
     }
     errRef.current.focus();
-  };
+};
 
   return (
     <div className={`landing ${isVisible ? "background-l" : ""}`}>

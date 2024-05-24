@@ -8,6 +8,7 @@ import { FaEdit, FaPlus, FaKey, FaTrash } from "react-icons/fa";
 import { PostsContext } from "../Context/PostsContext ";
 import UserContext from "../Context/UserContext";
 import Logout from "../Login&SignUp/Logout/Logout";
+import api from "../../api/axios";
 import defaultPhoto from "../../assets/default.png";
 import "./profile.css";
 
@@ -17,7 +18,7 @@ const Profile = () => {
 
   const { posts, setPosts } = useContext(PostsContext);
   const [profilePhoto, setProfilePhoto] = useState(() => {
-    const savedPhoto = localStorage.getItem("profilePhoto");
+    const savedPhoto = user.image;
     return savedPhoto ? savedPhoto : defaultPhoto;
   });
 
@@ -80,31 +81,54 @@ const Profile = () => {
     setPosts(posts.filter((post) => post.id !== parseInt(postId)));
   };
 
-  const addNewPost = (newPost) => {
+  const addNewPost = async (newPost) => {
     const postId = newPost.get("id");
     const title = newPost.get("title");
     const images = newPost
       .getAll("images")
       .map((image) => URL.createObjectURL(image));
     const author = newPost.get("author");
-    const userName = newPost.get("user");
-    const publishDate = newPost.get("publishDate");
-    const postDate = newPost.get("postDate");
     const description = newPost.get("description");
-    const userId = newPost.get("userId");
+    // const userName = newPost.get("user");
+    // const publishDate = newPost.get("publishDate");
+    // const postDate = newPost.get("postDate");
+    // const userId = newPost.get("userId");
 
     const postToAdd = {
-      id: postId,
       title,
       images,
-      author,
-      user: userName,
-      publishDate,
-      postDate,
       description,
-      userId,
+      author,
+      id: postId,
     };
-
+    // user: userName,
+    // publishDate,
+    // postDate,
+    // userId,
+    try {
+      const response = await api.post("/books/create", postToAdd);
+    
+      if (response.status === 201) {
+        console.log("Book created successfully", response.data);
+        // Additional logic for a successful creation can go here, e.g., updating state or redirecting the user.
+      } else {
+        console.warn("Unexpected response status:", response.status);
+        // Handle unexpected statuses if needed
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error("Error creating book:", error.response.data);
+        // You can handle specific error statuses here if needed
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("No response received:", error.request);
+      } else {
+        // Something happened while setting up the request
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+    
     setPosts((prevPosts) => [...prevPosts, postToAdd]);
     setUserPosts((prevUserPosts) => [...prevUserPosts, postToAdd]);
     setShowNewPostDialog(false);
@@ -191,7 +215,6 @@ const Profile = () => {
                 );
                 // Close the dialog
                 closeDialog("editPost");
-                console.log("Updated Post:", updatedPost);
               }}
             />
           )}

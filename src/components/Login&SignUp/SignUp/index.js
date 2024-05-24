@@ -119,7 +119,7 @@ const SignUp = () => {
     };
 
     try {
-      const response = await api.post("/register", payload);
+      const response = await api.post("/account/register", payload);
 
       if (response.status === 200) {
         login(payload);

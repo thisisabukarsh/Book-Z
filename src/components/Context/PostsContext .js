@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 // import { postData } from "../Feed/postsData";
-import api from "../../api/axios";
+import api from "../../api/axios"; 
 import { useEffect } from "react";
 import { requestData } from "../Feed/Post/requestData";
 

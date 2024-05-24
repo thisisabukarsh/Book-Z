@@ -9,6 +9,8 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
     post ? post.description : ""
   );
 
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Construct the updated post object
@@ -18,7 +20,7 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
       image: editedImage,
       description: editedDescription,
     };
-    onUpdatePost(updatedPost);
+    onUpdatePost(updatedPost); 
   };
 
   const handleImageChange = (e) => {

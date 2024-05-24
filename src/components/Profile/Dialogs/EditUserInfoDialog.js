@@ -1,19 +1,19 @@
 import React, { useState, useContext } from "react";
+import api from "../../../api/axios";
 import UserContext from "../../Context/UserContext";
 import "./dialog.css";
 
 const EditUserInfoDialog = ({ onClose }) => {
-  const [newUserInfo, setNewUserInfo] = useState({
-    // Initialize with current user info
-    userName: "",
-    phoneNumber: "",
-    email: "",
-  });
-
+  
   const { userData, setUserData } = useContext(UserContext);
   const { user } = userData;
-  const Edit_URL = `http://localhost:8081/patch/${user.userId}`;
-
+  
+  const [newUserInfo, setNewUserInfo] = useState({
+    // Initialize with current user info
+    username: user.username,
+    phoneNumber: user.phoneNumber,
+    email: user.email,
+  });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewUserInfo((prevUserInfo) => ({
@@ -21,51 +21,30 @@ const EditUserInfoDialog = ({ onClose }) => {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedUser = { ...user, ...newUserInfo };
+    try {
+      const response = await api.put(`/users/update/${user.userId}`, newUserInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
-    // Update user info in context and local storage
-    setUserData({ ...userData, user: updatedUser });
-    localStorage.setItem(
-      "userData",
-      JSON.stringify({ ...userData, user: updatedUser })
-    );
-
-    // Close the dialog
-    onClose();
+      if (response.status === 204) { // No Content
+        const updatedUser = response.data;
+        setUserData({ ...userData, user: updatedUser });
+        localStorage.setItem("userData", JSON.stringify({ ...userData, user: updatedUser }));
+        onClose();
+      } else {
+        console.error("Error updating user:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const updatedUserString = JSON.stringify(newUserInfo); // Convert to string
-  //     const response = await fetch(Edit_URL, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: updatedUserString, // Send as a string
-  //       credentials: "include",
-  //     });
-
-  //     if (response.ok) {
-  //       const returnedUser = await response.json();
-  //       setUserData({ ...userData, user: returnedUser });
-  //       localStorage.setItem(
-  //         "userData",
-  //         JSON.stringify({ ...userData, user: returnedUser })
-  //       );
-  //       onClose();
-  //     } else {
-  //       const errorData = await response.json();
-  //       console.error("Error updating user:", errorData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Network error:", error);
-  //   }
-  // };
 
   return (
     <div className="dialog">
@@ -76,7 +55,7 @@ const EditUserInfoDialog = ({ onClose }) => {
           <input
             type="text"
             name="userName"
-            value={newUserInfo.userName}
+            value={newUserInfo.username}
             onChange={handleChange}
           />
           <label>Phone Number:</label>

@@ -4,6 +4,7 @@ import NewPost from "./newPost";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { useState, useContext, useEffect } from "react";
 import UserContext from "../Context/UserContext";
+import api from "../../api/axios";
 import { Link } from "react-router-dom";
 
 const Feed = () => {
@@ -34,30 +35,57 @@ const Feed = () => {
       )
     : posts;
 
-  const addNewPost = (newPost) => {
+  const addNewPost = async (newPost) => {
     const postId = newPost.get("id");
     const title = newPost.get("title");
     const image = newPost.getAll("image");
     // const imagesURL = images.map((image) => URL.createObjectURL(image));
 
     const author = newPost.get("author");
-    const user = newPost.get("user");
-    const publishDate = newPost.get("publishDate");
-    const postDate = newPost.get("postDate");
+    // const user = newPost.get("user");
+    // const publishDate = newPost.get("publishDate");
+    // const postDate = newPost.get("postDate");
     const description = newPost.get("description");
-    const userId = newPost.get("userId");
+    // const userId = newPost.get("userId");
 
     const postToAdd = {
-      id: postId,
       title: title,
       image: image,
       author: author,
-      user: user,
-      publishDate: publishDate,
-      postDate: postDate,
       description: description,
-      userId: userId,
+      id: postId,
     };
+
+
+    // user: user,
+    // publishDate: publishDate,
+    // postDate: postDate,
+    // userId: userId,
+
+    try {
+      const response = await api.post("/books/create", postToAdd);
+    
+      if (response.status === 201) {
+        console.log("Book created successfully", response.data);
+        // Additional logic for a successful creation can go here, e.g., updating state or redirecting the user.
+      } else {
+        console.warn("Unexpected response status:", response.status);
+        // Handle unexpected statuses if needed
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error("Error creating book:", error.response.data);
+        // You can handle specific error statuses here if needed
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("No response received:", error.request);
+      } else {
+        // Something happened while setting up the request
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+    
     setPosts([...posts, postToAdd]);
     setShowNewPostDialog(false);
   };
