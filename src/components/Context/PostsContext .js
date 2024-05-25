@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 // import { postData } from "../Feed/postsData";
-import api from "../../api/axios"; 
+import api from "../../api/axios";
 import { useEffect } from "react";
 import { requestData } from "../Feed/Post/requestData";
 
@@ -8,6 +8,7 @@ export const PostsContext = createContext();
 export const getBooks = async () => {
   try {
     const response = await api.get("/books");
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching books:", error);

@@ -122,7 +122,6 @@ const SignUp = () => {
       const response = await api.post("/account/register", payload);
 
       if (response.status === 200) {
-        login(payload);
         setSuccess(true);
         setUser("");
         setPwd("");
@@ -142,7 +141,7 @@ const SignUp = () => {
   return (
     <>
       {success ? (
-        navigate("/profile")
+        navigate("/login")
       ) : (
         <div className={`landing ${isVisible ? "background-s" : ""}`}>
           <section className={`container-s ${isVisible ? "show" : ""}`}>

@@ -1,53 +1,73 @@
 import React, { useState, useContext } from "react";
 import { FaTimes } from "react-icons/fa";
 import UserContext from "../../Context/UserContext";
+import api from "../../../api/axios";
 import "./newPost.css";
 
 const NewPost = ({ onClose, onAddPost }) => {
-  const { userData } = useContext(UserContext);
-  const { user } = userData;
+  // Destructuring userData to get the user directly
+  const { user } = useContext(UserContext).userData;
 
+  // State variables
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
 
+  // Handler for title change
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
 
+  // Handler for image change
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      // Update image state with the data URL of the uploaded image
-      setImage(event.target.result);
-    };
-    reader.readAsDataURL(file);
+    setImage(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    const id = Date.now();
-    formData.append("id", id);
-    formData.append("title", title);
-    formData.append("image", image);
+    const formDataObject = {
+      // Id: "1",
+      Title: title,
+      Image: image,
+      UserId: user.id,
+      Condition: "Like_New",
+      Description: description,
+    };
 
-    formData.append("user", user.userName);
-    formData.append("userId", user.userId);
+    // Append each field to formData
+    Object.entries(formDataObject).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-    const fullDate = new Date();
-    const day = fullDate.getDate();
-    const month = fullDate.getMonth() + 1;
-    const year = fullDate.getFullYear();
-    const postDate = `${day}/${month}/${year}`;
-    formData.append("postDate", postDate);
-    formData.append("description", description);
+    try {
+      const response = await api.post(`/users/books/${user.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    onAddPost(formData);
+      if (response.status === 201) {
+        console.log("Book created successfully", response.data);
+        // onAddPost(response.data);
+      } else {
+        console.warn("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Error creating book:", error.response.data);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }
+
+    // Clearing form fields and closing modal
     setTitle("");
-    setImage("");
+    setImage(null);
     setDescription("");
+    onClose();
   };
 
   return (
@@ -74,7 +94,6 @@ const NewPost = ({ onClose, onAddPost }) => {
             id="images"
             onChange={handleImageChange}
             accept="image/*"
-            multiple
             required
           />
           <label htmlFor="description">Description:</label>

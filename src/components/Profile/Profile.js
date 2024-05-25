@@ -8,7 +8,6 @@ import { FaEdit, FaPlus, FaKey, FaTrash } from "react-icons/fa";
 import { PostsContext } from "../Context/PostsContext ";
 import UserContext from "../Context/UserContext";
 import Logout from "../Login&SignUp/Logout/Logout";
-import api from "../../api/axios";
 import defaultPhoto from "../../assets/default.png";
 import "./profile.css";
 
@@ -22,15 +21,24 @@ const Profile = () => {
     return savedPhoto ? savedPhoto : defaultPhoto;
   });
 
-  const [userPosts, setUserPosts] = useState([]);
+  // const [userPosts, setUserPosts] = useState([]);
 
-  useEffect(() => {
-    const updatedUserPosts =
-      user && user.userId
-        ? posts.filter((post) => post.userId === user.userId)
-        : [];
-    setUserPosts(updatedUserPosts);
-  }, [posts, user]);
+  // // Check if user.books is not null or undefined before setting the state
+  // if (user.books) {
+  //   setUserPosts(user.books);
+  // } else {
+  //   // Handle the case when user.books is null or undefined
+  //   // For example, set userPosts to an empty array
+  //   setUserPosts([]);
+  // }
+
+  // useEffect(() => {
+  //   const updatedUserPosts =
+  //     user && user.id
+  //       ? posts.filter((post) => post.userId === user.userId)
+  //       : [];
+  //   setUserPosts(updatedUserPosts);
+  // }, [posts, user]);
 
   const [showNewPostDialog, setShowNewPostDialog] = useState(false);
   const [showEditPostDialog, setShowEditPostDialog] = useState(false);
@@ -82,55 +90,17 @@ const Profile = () => {
   };
 
   const addNewPost = async (newPost) => {
-    const postId = newPost.get("id");
-    const title = newPost.get("title");
-    const images = newPost
-      .getAll("images")
-      .map((image) => URL.createObjectURL(image));
-    const author = newPost.get("author");
-    const description = newPost.get("description");
-    // const userName = newPost.get("user");
-    // const publishDate = newPost.get("publishDate");
-    // const postDate = newPost.get("postDate");
-    // const userId = newPost.get("userId");
+    // const postToAdd = {
+    //   id: newPost.id,
+    //   title: newPost.title,
+    //   image: newPost.image,
+    //   description: newPost.description,
+    //   condition: "LikeNew",
+    //   userId: newPost.userId,
+    // };
 
-    const postToAdd = {
-      title,
-      images,
-      description,
-      author,
-      id: postId,
-    };
-    // user: userName,
-    // publishDate,
-    // postDate,
-    // userId,
-    try {
-      const response = await api.post("/books/create", postToAdd);
-    
-      if (response.status === 201) {
-        console.log("Book created successfully", response.data);
-        // Additional logic for a successful creation can go here, e.g., updating state or redirecting the user.
-      } else {
-        console.warn("Unexpected response status:", response.status);
-        // Handle unexpected statuses if needed
-      }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        console.error("Error creating book:", error.response.data);
-        // You can handle specific error statuses here if needed
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error("No response received:", error.request);
-      } else {
-        // Something happened while setting up the request
-        console.error("Error setting up the request:", error.message);
-      }
-    }
-    
-    setPosts((prevPosts) => [...prevPosts, postToAdd]);
-    setUserPosts((prevUserPosts) => [...prevUserPosts, postToAdd]);
+    // setPosts((prevPosts) => [...prevPosts, postToAdd]);
+    // setUserPosts((prevUserPosts) => [...prevUserPosts, postToAdd]);
     setShowNewPostDialog(false);
   };
 
@@ -153,12 +123,6 @@ const Profile = () => {
         <div className="profile">
           <div className="profile-info">
             <div className="profile-photo">
-              {/* <img src={user.profilePhoto} alt="Profile" /> */}
-              {/* <img src={defaultPhoto} alt="Profile" /> */}
-              {/* <button className="edit-button">
-                <FaEdit className="edit-icon" />
-                Upload New photo
-              </button> */}
               <img src={profilePhoto} alt="Profile" />
               <input
                 type="file"
@@ -169,25 +133,23 @@ const Profile = () => {
               />
               <label
                 htmlFor="upload-photo"
-                className=""
                 style={{
                   color: "#64748b",
                   cursor: "pointer",
                   fontSize: "14px",
                 }}
               >
-                <FaEdit className="edit-icon" />
-                Upload New Photo
+                <FaEdit className="edit-icon" /> Upload New Photo
               </label>
             </div>
             <div className="info">
-              <h2>{user.userName}</h2>
+              <h2>{user.username}</h2>
               <p>Phone: {user.phoneNumber}</p>
               <p>Email: {user.email}</p>
-              <p>Rating: {user.rating} / 5</p>
+              <p>Rating: {user.averageRating} / 5</p>
               <div className="buttons">
                 <button onClick={() => openDialog("editUserInfo")}>
-                  <FaEdit /> Edit Your info
+                  <FaEdit /> Edit Your Info
                 </button>
                 <button onClick={() => openDialog("resetPassword")}>
                   <FaKey /> Reset Password
@@ -202,18 +164,16 @@ const Profile = () => {
               post={editingPost}
               onClose={() => closeDialog("editPost")}
               onUpdatePost={(updatedPost) => {
-                // Logic to update the post in the state
-                setPosts((prevPosts) =>
-                  prevPosts.map((post) =>
-                    post.id === updatedPost.id ? updatedPost : post
-                  )
-                );
-                setUserPosts((prevUserPosts) =>
-                  prevUserPosts.map((post) =>
-                    post.id === updatedPost.id ? updatedPost : post
-                  )
-                );
-                // Close the dialog
+                // setPosts((prevPosts) =>
+                //   prevPosts.map((post) =>
+                //     post.id === updatedPost.id ? updatedPost : post
+                //   )
+                // );
+                // setUserPosts((prevUserPosts) =>
+                //   prevUserPosts.map((post) =>
+                //     post.id === updatedPost.id ? updatedPost : post
+                //   )
+                // );
                 closeDialog("editPost");
               }}
             />
@@ -234,54 +194,37 @@ const Profile = () => {
             <div className="post-header">
               <h3>Posts</h3>
               <button onClick={() => openDialog("newPost")}>
-                <FaPlus /> New Post
+                <FaPlus /> Add New Post
               </button>
             </div>
             <div className="posts">
-              {userPosts.map((post) => (
-                <div className="card" key={post.id}>
-                  <Link to={`/post/${post.id}`} className="card-link">
-                    <img src={post.image} alt={post.title} />
-                  </Link>
-                  <div className="card-content">
-                    <div className="post-buttons">
-                      <button onClick={() => openDialog("editPost", post)}>
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDeletePost(post.id)}>
-                        <FaTrash />
-                      </button>
+              {user.books.length === 0 ? (
+                <p>You haven't added any books yet.</p>
+              ) : (
+                user.books.map((post) => (
+                  <div className="card" key={post.id}>
+                    <Link to={`/post/${post.id}`} className="card-link">
+                      <img src={post.image} alt={post.title} />
+                    </Link>
+                    <div className="card-content">
+                      <div className="post-buttons">
+                        <button onClick={() => openDialog("editPost", post)}>
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => handleDeletePost(post.id)}>
+                          <FaTrash />
+                        </button>
+                      </div>
+                      <h3>{post.title}</h3>
                     </div>
-                    <h3>{post.title}</h3>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
       ) : (
-        <div className="profile">
-          <div className="profile-info">
-            <div className="profile-photo">
-              <img src={defaultPhoto} alt="Profile " />
-            </div>
-            <div className="info">
-              <h2>
-                Login to show your profile ...{" "}
-                <Link to="/login" className="link">
-                  Login
-                </Link>
-              </h2>
-              <p>
-                Don't have an account be come a member ..{" "}
-                <Link to="/signup" className="link">
-                  SignUp
-                </Link>
-              </p>
-            </div>
-          </div>
-          <hr />
-        </div>
+        <p>You need to be logged in to view this page.</p>
       )}
     </>
   );

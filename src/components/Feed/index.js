@@ -7,6 +7,8 @@ import UserContext from "../Context/UserContext";
 import api from "../../api/axios";
 import { Link } from "react-router-dom";
 
+const serverBaseUrl = "http://localhost:5050";
+
 const Feed = () => {
   const { posts, setPosts } = useContext(PostsContext);
   const { userData } = useContext(UserContext);
@@ -35,58 +37,21 @@ const Feed = () => {
       )
     : posts;
 
-  const addNewPost = async (newPost) => {
-    const postId = newPost.get("id");
-    const title = newPost.get("title");
-    const image = newPost.getAll("image");
-    // const imagesURL = images.map((image) => URL.createObjectURL(image));
-
-    const author = newPost.get("author");
-    // const user = newPost.get("user");
-    // const publishDate = newPost.get("publishDate");
-    // const postDate = newPost.get("postDate");
-    const description = newPost.get("description");
-    // const userId = newPost.get("userId");
-
-    const postToAdd = {
-      title: title,
-      image: image,
-      author: author,
-      description: description,
-      id: postId,
-    };
-
-
-    // user: user,
-    // publishDate: publishDate,
-    // postDate: postDate,
-    // userId: userId,
-
-    try {
-      const response = await api.post("/books/create", postToAdd);
-    
-      if (response.status === 201) {
-        console.log("Book created successfully", response.data);
-        // Additional logic for a successful creation can go here, e.g., updating state or redirecting the user.
-      } else {
-        console.warn("Unexpected response status:", response.status);
-        // Handle unexpected statuses if needed
-      }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        console.error("Error creating book:", error.response.data);
-        // You can handle specific error statuses here if needed
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error("No response received:", error.request);
-      } else {
-        // Something happened while setting up the request
-        console.error("Error setting up the request:", error.message);
-      }
-    }
-    
-    setPosts([...posts, postToAdd]);
+  const addNewPost = async (data) => {
+    //   const postId = data.get("id");
+    //   const title = data.get("Title");
+    //   const image = data.getAll("image");
+    //   const description = data.get("Description");
+    //   const userId = data.get("UserId");
+    //   const postToAdd = {
+    //     id: postId,
+    //     Title: title,
+    //     Image: image,
+    //     Description: description,
+    //     Condition: "LikeNew",
+    //     // userId: userId,
+    //   };
+    //   setPosts([...posts, postToAdd]);
     setShowNewPostDialog(false);
   };
 
@@ -118,7 +83,7 @@ const Feed = () => {
           {filteredPosts.map((post) => (
             <Link to={`/post/${post.id}`} key={post.id} className="card-link">
               <div className="card">
-                <img src={post.image} alt={post.title} />
+                <img src={`${serverBaseUrl}${post.image}`} alt={post.title} />
                 <div className="card-content">
                   <h3>{post.title}</h3>
                 </div>
@@ -130,5 +95,4 @@ const Feed = () => {
     </div>
   );
 };
-
 export default Feed;

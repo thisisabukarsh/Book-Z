@@ -4,10 +4,9 @@ import UserContext from "../../Context/UserContext";
 import "./dialog.css";
 
 const EditUserInfoDialog = ({ onClose }) => {
-  
   const { userData, setUserData } = useContext(UserContext);
   const { user } = userData;
-  
+
   const [newUserInfo, setNewUserInfo] = useState({
     // Initialize with current user info
     username: user.username,
@@ -26,17 +25,21 @@ const EditUserInfoDialog = ({ onClose }) => {
     e.preventDefault();
 
     try {
-      const response = await api.put(`/users/update/${user.userId}`, newUserInfo, {
+      const response = await api.put(`/users/update/${user.Id}`, newUserInfo, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
 
-      if (response.status === 204) { // No Content
+      if (response.status === 204) {
+        // No Content
         const updatedUser = response.data;
         setUserData({ ...userData, user: updatedUser });
-        localStorage.setItem("userData", JSON.stringify({ ...userData, user: updatedUser }));
+        localStorage.setItem(
+          "userData",
+          JSON.stringify({ ...userData, user: updatedUser })
+        );
         onClose();
       } else {
         console.error("Error updating user:", response.statusText);
