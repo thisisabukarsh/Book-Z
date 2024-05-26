@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import NewPost from "../Feed/newPost";
 import ResetPasswordDialog from "./Dialogs/ResetPasswordDialog";
@@ -9,42 +9,58 @@ import { PostsContext } from "../Context/PostsContext ";
 import UserContext from "../Context/UserContext";
 import Logout from "../Login&SignUp/Logout/Logout";
 import defaultPhoto from "../../assets/default.png";
+import api from "../../api/axios";
 import "./profile.css";
 
 const Profile = () => {
+  const serverBaseUrl = "http://localhost:5050";
+
   const { userData } = useContext(UserContext);
   const { isAuthenticated, user } = userData;
 
-  const { posts, setPosts } = useContext(PostsContext);
-  const [profilePhoto, setProfilePhoto] = useState(() => {
-    const savedPhoto = user.image;
-    return savedPhoto ? savedPhoto : defaultPhoto;
-  });
+  const { posts, setPosts, userPosts, setUserPosts } = useContext(PostsContext);
+  const [profilePhoto, setProfilePhoto] = useState(defaultPhoto);
 
-  // const [userPosts, setUserPosts] = useState([]);
+  useEffect(() => {
+    // Check if the user is authenticated
+    const isAuthenticated = !!user && !!user.image;
 
-  // // Check if user.books is not null or undefined before setting the state
-  // if (user.books) {
-  //   setUserPosts(user.books);
-  // } else {
-  //   // Handle the case when user.books is null or undefined
-  //   // For example, set userPosts to an empty array
-  //   setUserPosts([]);
-  // }
-
-  // useEffect(() => {
-  //   const updatedUserPosts =
-  //     user && user.id
-  //       ? posts.filter((post) => post.userId === user.userId)
-  //       : [];
-  //   setUserPosts(updatedUserPosts);
-  // }, [posts, user]);
+    if (isAuthenticated) {
+      const savedPhoto = user.image;
+      setProfilePhoto(savedPhoto ? savedPhoto : defaultPhoto);
+    }
+  }, [user]);
 
   const [showNewPostDialog, setShowNewPostDialog] = useState(false);
   const [showEditPostDialog, setShowEditPostDialog] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [showEditUserInfoDialog, setShowEditUserInfoDialog] = useState(false);
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false);
+
+  const [selectedOption, setSelectedOption] = useState("Posts");
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close the dropdown when clicking outside of it
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  // Filtered posts based on the selected option
+  const filteredPosts =
+    selectedOption === "Posts"
+      ? userPosts.filter((post) => post.availability === "Available")
+      : userPosts.filter((post) => post.availability === "Completed");
 
   const openDialog = (dialog, post) => {
     switch (dialog) {
@@ -85,35 +101,55 @@ const Profile = () => {
     }
   };
 
-  const handleDeletePost = (postId) => {
-    setPosts(posts.filter((post) => post.id !== parseInt(postId)));
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await api.delete(`/books/delete/${postId}`, {
+        withCredentials: true,
+      });
+
+      if (response.status === 200 || response.status === 204) {
+        setPosts(posts.filter((post) => post.id !== parseInt(postId)));
+      } else {
+        console.error("Error deleting post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   };
 
   const addNewPost = async (newPost) => {
-    // const postToAdd = {
-    //   id: newPost.id,
-    //   title: newPost.title,
-    //   image: newPost.image,
-    //   description: newPost.description,
-    //   condition: "LikeNew",
-    //   userId: newPost.userId,
-    // };
-
-    // setPosts((prevPosts) => [...prevPosts, postToAdd]);
-    // setUserPosts((prevUserPosts) => [...prevUserPosts, postToAdd]);
+    setUserPosts((prevUserPosts) => [...prevUserPosts, newPost]);
     setShowNewPostDialog(false);
   };
 
-  const handleProfilePhotoChange = (event) => {
+  const handleProfilePhotoChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const newProfilePhotoURL = reader.result;
-        setProfilePhoto(newProfilePhotoURL);
-        localStorage.setItem("profilePhoto", newProfilePhotoURL);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await api.post(
+          `/users/uploaduserphoto/${user.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+          const newProfilePhotoURL = response.data.imageUrl;
+          setProfilePhoto(newProfilePhotoURL);
+          localStorage.setItem("profilePhoto", newProfilePhotoURL);
+        } else {
+          console.error("Error uploading photo:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+      }
     }
   };
 
@@ -123,7 +159,7 @@ const Profile = () => {
         <div className="profile">
           <div className="profile-info">
             <div className="profile-photo">
-              <img src={profilePhoto} alt="Profile" />
+              <img src={`${serverBaseUrl}${profilePhoto}`} alt="Profile" />
               <input
                 type="file"
                 accept="image/*"
@@ -164,16 +200,16 @@ const Profile = () => {
               post={editingPost}
               onClose={() => closeDialog("editPost")}
               onUpdatePost={(updatedPost) => {
-                // setPosts((prevPosts) =>
-                //   prevPosts.map((post) =>
-                //     post.id === updatedPost.id ? updatedPost : post
-                //   )
-                // );
-                // setUserPosts((prevUserPosts) =>
-                //   prevUserPosts.map((post) =>
-                //     post.id === updatedPost.id ? updatedPost : post
-                //   )
-                // );
+                setPosts((prevPosts) =>
+                  prevPosts.map((post) =>
+                    post.id === updatedPost.id ? updatedPost : post
+                  )
+                );
+                setUserPosts((prevUserPosts) =>
+                  prevUserPosts.map((post) =>
+                    post.id === updatedPost.id ? updatedPost : post
+                  )
+                );
                 closeDialog("editPost");
               }}
             />
@@ -192,19 +228,54 @@ const Profile = () => {
           )}
           <div className="container">
             <div className="post-header">
-              <h3>Posts</h3>
+              <div className="select-container" ref={dropdownRef}>
+                <div className="select-selected" onClick={() => setOpen(!open)}>
+                  {selectedOption}
+                  <div className="select-arrow"></div> {/* Arrow icon */}
+                </div>
+                {open && (
+                  <div className="select-dropdown ">
+                    <div
+                      className="select-option"
+                      onClick={() => {
+                        setSelectedOption("Posts");
+                        setOpen(!open);
+                      }}
+                    >
+                      Posts
+                    </div>
+                    <div
+                      className="select-option"
+                      onClick={() => {
+                        setSelectedOption("Archive");
+                        setOpen(!open);
+                      }}
+                    >
+                      Archive
+                    </div>
+                  </div>
+                )}
+              </div>
               <button onClick={() => openDialog("newPost")}>
                 <FaPlus /> Add New Post
               </button>
             </div>
             <div className="posts">
-              {user.books.length === 0 ? (
-                <p>You haven't added any books yet.</p>
+              {/* Display filtered posts based on selected option */}
+              {filteredPosts.length === 0 ? (
+                <p>
+                  {selectedOption === "Posts"
+                    ? "You haven't added any available books yet."
+                    : "No completed books found in archive."}
+                </p>
               ) : (
-                user.books.map((post) => (
+                filteredPosts.map((post) => (
                   <div className="card" key={post.id}>
                     <Link to={`/post/${post.id}`} className="card-link">
-                      <img src={post.image} alt={post.title} />
+                      <img
+                        src={`${serverBaseUrl}${post.imageUrl}`}
+                        alt={post.title}
+                      />
                     </Link>
                     <div className="card-content">
                       <div className="post-buttons">
@@ -224,7 +295,25 @@ const Profile = () => {
           </div>
         </div>
       ) : (
-        <p>You need to be logged in to view this page.</p>
+        <div className="profile">
+          <div className="profile-info">
+            <div className="profile-photo">
+              <img src={`${profilePhoto}`} alt="Profile" />
+            </div>
+            <div className="info">
+              <h3 className="gust">
+                <p> You need to be logged in to view this page.</p>&nbsp;
+                <Link className="link" to="/login">
+                  Login
+                </Link>
+                &nbsp;Or&nbsp;
+                <Link className="link" to="/signup">
+                  Sign Up
+                </Link>
+              </h3>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

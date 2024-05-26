@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const serverBaseUrl = "http://localhost:5050";
 
 const Feed = () => {
-  const { posts, setPosts } = useContext(PostsContext);
+  const { posts, setPosts, userPosts, setUserPosts } = useContext(PostsContext);
   const { userData } = useContext(UserContext);
   const { isAuthenticated } = userData;
 
@@ -37,21 +37,9 @@ const Feed = () => {
       )
     : posts;
 
-  const addNewPost = async (data) => {
-    //   const postId = data.get("id");
-    //   const title = data.get("Title");
-    //   const image = data.getAll("image");
-    //   const description = data.get("Description");
-    //   const userId = data.get("UserId");
-    //   const postToAdd = {
-    //     id: postId,
-    //     Title: title,
-    //     Image: image,
-    //     Description: description,
-    //     Condition: "LikeNew",
-    //     // userId: userId,
-    //   };
-    //   setPosts([...posts, postToAdd]);
+  const addNewPost = async (newPost) => {
+    setPosts((prevPosts) => [...prevPosts, newPost]);
+    // setUserPosts((prevUserPosts) => [...prevUserPosts, data]);
     setShowNewPostDialog(false);
   };
 

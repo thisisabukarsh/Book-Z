@@ -12,6 +12,7 @@ const NewPost = ({ onClose, onAddPost }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [condition, setCondition] = useState("Used");
 
   // Handler for title change
   const handleTitleChange = (e) => {
@@ -23,15 +24,19 @@ const NewPost = ({ onClose, onAddPost }) => {
     setImage(e.target.files[0]);
   };
 
+  // Handler for condition change
+  const handleConditionChange = (e) => {
+    setCondition(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     const formDataObject = {
-      // Id: "1",
       Title: title,
       Image: image,
       UserId: user.id,
-      Condition: "Like_New",
+      Condition: condition,
       Description: description,
     };
 
@@ -49,7 +54,7 @@ const NewPost = ({ onClose, onAddPost }) => {
 
       if (response.status === 201) {
         console.log("Book created successfully", response.data);
-        // onAddPost(response.data);
+        onAddPost(response.data);
       } else {
         console.warn("Unexpected response status:", response.status);
       }
@@ -67,6 +72,7 @@ const NewPost = ({ onClose, onAddPost }) => {
     setTitle("");
     setImage(null);
     setDescription("");
+    setCondition("New");
     onClose();
   };
 
@@ -96,6 +102,18 @@ const NewPost = ({ onClose, onAddPost }) => {
             accept="image/*"
             required
           />
+          <label htmlFor="condition">Condition:</label>
+          <select
+            id="condition"
+            value={condition}
+            onChange={handleConditionChange}
+            required
+          >
+            <option value="New">New</option>
+            <option value="Like New">Like New</option>
+            <option value="Used">Used</option>
+            <option value="Damaged">Damaged</option>
+          </select>
           <label htmlFor="description">Description:</label>
           <textarea
             id="description"

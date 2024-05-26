@@ -1,32 +1,35 @@
-import React, { createContext, useState } from "react";
-// import { postData } from "../Feed/postsData";
+import React, { createContext, useState, useContext } from "react";
 import api from "../../api/axios";
 import { useEffect } from "react";
-import { requestData } from "../Feed/Post/requestData";
+import UserContext from "./UserContext";
 
 export const PostsContext = createContext();
-export const getBooks = async () => {
-  try {
-    const response = await api.get("/books");
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching books:", error);
-    throw error;
-  }
-};
 
 export const PostsProvider = ({ children }) => {
+  const { userData } = useContext(UserContext);
+  const { user, isAuthenticated } = userData;
+
   const [posts, setPosts] = useState([]);
-  const [request, setRequest] = useState(requestData);
+
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const booksData = await getBooks();
-        setPosts(booksData);
+        const response = await api.get("/books");
+        console.log(response.data);
+        setPosts(response.data);
       } catch (error) {
         console.error("Error fetching books:", error);
+        throw error;
+      }
+      if (isAuthenticated) {
+        try {
+          const response = await api.get(`users/withall/${user.id}`);
+          setUserPosts(response.data.books);
+        } catch (error) {
+          console.error("Error fetching books:", error);
+        }
       }
     };
 
@@ -34,7 +37,7 @@ export const PostsProvider = ({ children }) => {
   }, []);
 
   return (
-    <PostsContext.Provider value={{ posts, setPosts, request, setRequest }}>
+    <PostsContext.Provider value={{ posts, setPosts, userPosts, setUserPosts }}>
       {children}
     </PostsContext.Provider>
   );

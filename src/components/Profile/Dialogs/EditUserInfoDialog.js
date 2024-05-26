@@ -13,6 +13,7 @@ const EditUserInfoDialog = ({ onClose }) => {
     phoneNumber: user.phoneNumber,
     email: user.email,
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewUserInfo((prevUserInfo) => ({
@@ -25,15 +26,14 @@ const EditUserInfoDialog = ({ onClose }) => {
     e.preventDefault();
 
     try {
-      const response = await api.put(`/users/update/${user.Id}`, newUserInfo, {
+      const response = await api.put(`/users/update/${user.id}`, newUserInfo, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
 
-      if (response.status === 204) {
-        // No Content
+      if (response.status === 200) {
         const updatedUser = response.data;
         setUserData({ ...userData, user: updatedUser });
         localStorage.setItem(
@@ -54,26 +54,32 @@ const EditUserInfoDialog = ({ onClose }) => {
       <div className="dialog-content">
         <h2>Edit Your Info</h2>
         <form onSubmit={handleSubmit}>
-          <label>Username:</label>
+          <label htmlFor="username">Username:</label>
           <input
             type="text"
-            name="userName"
+            id="username"
+            name="username"
             value={newUserInfo.username}
             onChange={handleChange}
+            required
           />
-          <label>Phone Number:</label>
+          <label htmlFor="phoneNumber">Phone Number:</label>
           <input
             type="text"
+            id="phoneNumber"
             name="phoneNumber"
             value={newUserInfo.phoneNumber}
             onChange={handleChange}
+            required
           />
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="email"
+            id="email"
             name="email"
             value={newUserInfo.email}
             onChange={handleChange}
+            required
           />
           <button type="submit">Save Changes</button>
           <button type="button" onClick={onClose}>

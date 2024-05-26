@@ -1,5 +1,6 @@
 import "./dialog.css";
-import React, { useState } from "react";
+import api from "../../../api/axios";
+import { useState } from "react";
 
 const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
   // State variables to hold the edited post data
@@ -8,24 +9,44 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
   const [editedDescription, setEditedDescription] = useState(
     post ? post.description : ""
   );
-
-  
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Construct the updated post object
-    const updatedPost = {
-      ...post,
-      title: editedTitle,
-      image: editedImage,
-      description: editedDescription,
-    };
-    onUpdatePost(updatedPost); 
-  };
+  const [editedCondition, setEditedCondition] = useState(
+    post ? post.condition : "Used"
+  );
+  const [status, setStatus] = useState(post ? post.status : "available");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]; // Get the first selected file
     setEditedImage(file);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Construct the updated post object
+    const updatedPost = {
+      title: editedTitle,
+      image: editedImage,
+      Condition: editedCondition,
+      description: editedDescription,
+      availability: status,
+    };
+    try {
+      const response = await api.put(`/books/update/${post.id}`, updatedPost, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        onUpdatePost(response.data);
+        onClose();
+      } else {
+        console.error("Error updating post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+    // onUpdatePost(updatedPost);
   };
 
   return (
@@ -39,14 +60,13 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
             id="title"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
+            required
           />
           <label htmlFor="image">Image:</label>
           <input
             type="file"
             id="image"
             accept="image/*"
-            multiple
-            required
             onChange={handleImageChange}
           />
           <label htmlFor="description">Description:</label>
@@ -54,7 +74,29 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
             id="description"
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
+            required
           ></textarea>
+          <label htmlFor="condition">Condition:</label>
+          <select
+            id="condition"
+            value={editedCondition}
+            onChange={(e) => setEditedCondition(e.target.value)}
+            required
+          >
+            <option value="New">New</option>
+            <option value="Like New">Like New</option>
+            <option value="Used">Used</option>
+            <option value="Damaged">Damaged</option>
+          </select>
+          <label htmlFor="status">Status:</label>
+          <select
+            id="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="available">Available</option>
+            <option value="completed">Completed</option>
+          </select>
           <div className="buttons">
             <button type="button" onClick={onClose}>
               Cancel

@@ -7,6 +7,9 @@
   font-weight: bold;
   color: #3674a6;
 }
+.profile .gust {
+  text-align: center;
+}
 .profile .link {
   color: #3674a6;
   text-decoration: none;
@@ -138,4 +141,42 @@ hr {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
+}
+.select-container {
+  position: relative;
+  display: inline-block;
+}
+
+.select-selected {
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  background-color: #f0f0f0;
+  border-top: none;
+  border-radius: 4px 4px 4px 4px;
+}
+
+.select-option {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* Arrow icon */
+.select-arrow {
+  position: absolute;
+  top: calc(50% - 4px);
+  right: 10px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #666;
 }

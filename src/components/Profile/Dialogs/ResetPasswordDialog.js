@@ -50,7 +50,7 @@ const ResetPasswordDialog = ({ onClose }) => {
       return;
     }
     if (validPwd && validMatch) {
-      resetPassword(pwd);
+      resetPassword(pwd, user.username);
       onClose();
     }
   };
