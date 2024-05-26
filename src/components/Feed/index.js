@@ -33,13 +33,12 @@ const Feed = () => {
   // Filter posts based on the search term
   const filteredPosts = searchTerm
     ? posts.filter((post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        post.title ? post.title.toLowerCase().includes(searchTerm.toLowerCase()) : false
       )
     : posts;
 
   const addNewPost = async (newPost) => {
     setPosts((prevPosts) => [...prevPosts, newPost]);
-    // setUserPosts((prevUserPosts) => [...prevUserPosts, data]);
     setShowNewPostDialog(false);
   };
 
@@ -58,7 +57,7 @@ const Feed = () => {
             />
           </div>
           <button
-            className={` btn-add ${isVisible ? "" : "hide"}`}
+            className={`btn-add ${isVisible ? "" : "hide"}`}
             onClick={openNewPostDialog}
           >
             <FaPlus /> <span className="new-post-text">New Post</span>
@@ -83,4 +82,5 @@ const Feed = () => {
     </div>
   );
 };
+
 export default Feed;
