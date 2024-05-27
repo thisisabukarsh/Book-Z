@@ -1,8 +1,12 @@
 import "./dialog.css";
+import { PostsContext } from "../../Context/PostsContext ";
+import { useContext } from "react";
 import api from "../../../api/axios";
 import { useState } from "react";
 
-const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
+const EditPostDialog = ({ post, onClose }) => {
+  const { setPosts, setUserPosts } = useContext(PostsContext);
+
   // State variables to hold the edited post data
   const [editedTitle, setEditedTitle] = useState(post ? post.title : "");
   const [editedImage, setEditedImage] = useState(null);
@@ -24,7 +28,7 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
     // Construct the updated post object
     const updatedPost = {
       title: editedTitle,
-      image: editedImage,
+      image: editedImage ? editedImage : post.image,
       Condition: editedCondition,
       description: editedDescription,
       availability: status,
@@ -38,7 +42,17 @@ const EditPostDialog = ({ post, onClose, onUpdatePost }) => {
       });
 
       if (response.status === 200) {
-        onUpdatePost(response.data);
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === response.data.id ? response.data : post
+          )
+        );
+        setUserPosts((prevUserPosts) =>
+          prevUserPosts.map((post) =>
+            post.id === response.data.id ? response.data : post
+          )
+        );
+        window.location.reload();
         onClose();
       } else {
         console.error("Error updating post:", response.statusText);

@@ -34,11 +34,19 @@ const EditUserInfoDialog = ({ onClose }) => {
       });
 
       if (response.status === 200) {
-        const updatedUser = response.data;
-        setUserData({ ...userData, user: updatedUser });
+        // const updatedUser = response.data;
+        setUserData({
+          ...userData,
+          user: {
+            ...userData.user,
+            email: newUserInfo.email,
+            username: newUserInfo.username,
+            phoneNumber: newUserInfo.phoneNumber,
+          },
+        });
         localStorage.setItem(
           "userData",
-          JSON.stringify({ ...userData, user: updatedUser })
+          JSON.stringify({ ...userData, user: newUserInfo })
         );
         onClose();
       } else {

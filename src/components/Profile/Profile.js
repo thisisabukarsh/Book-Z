@@ -15,7 +15,7 @@ import "./profile.css";
 const Profile = () => {
   const serverBaseUrl = "http://localhost:5050";
 
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
   const { isAuthenticated, user } = userData;
 
   const { posts, setPosts, userPosts, setUserPosts } = useContext(PostsContext);
@@ -23,11 +23,8 @@ const Profile = () => {
 
   useEffect(() => {
     // Check if the user is authenticated
-    const isAuthenticated = !!user && !!user.image;
-
-    if (isAuthenticated) {
-      const savedPhoto = user.image;
-      setProfilePhoto(savedPhoto ? savedPhoto : defaultPhoto);
+    if (!!user && !!user.image) {
+      setProfilePhoto(user.image);
     }
   }, [user]);
 
@@ -60,7 +57,7 @@ const Profile = () => {
   const filteredPosts =
     selectedOption === "Posts"
       ? userPosts.filter((post) => post.availability === "Available")
-      : userPosts.filter((post) => post.availability === "Completed");
+      : userPosts.filter((post) => post.availability === "completed");
 
   const openDialog = (dialog, post) => {
     switch (dialog) {
@@ -109,6 +106,7 @@ const Profile = () => {
 
       if (response.status === 200 || response.status === 204) {
         setPosts(posts.filter((post) => post.id !== parseInt(postId)));
+        setUserPosts(posts.filter((post) => post.id !== parseInt(postId)));
       } else {
         console.error("Error deleting post:", response.statusText);
       }
@@ -143,7 +141,17 @@ const Profile = () => {
         if (response.status === 200 || response.status === 201) {
           const newProfilePhotoURL = response.data.imageUrl;
           setProfilePhoto(newProfilePhotoURL);
-          localStorage.setItem("profilePhoto", newProfilePhotoURL);
+          try {
+            const response = await api.get(`/users/withall/${user.id}`);
+            setUserData({
+              ...userData,
+              user: { ...userData.user, image: response.data.image },
+            });
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+            throw error;
+          }
+          // localStorage.setItem("profilePhoto", newProfilePhotoURL);
         } else {
           console.error("Error uploading photo:", response.statusText);
         }
@@ -199,19 +207,6 @@ const Profile = () => {
             <EditPostDialog
               post={editingPost}
               onClose={() => closeDialog("editPost")}
-              onUpdatePost={(updatedPost) => {
-                setPosts((prevPosts) =>
-                  prevPosts.map((post) =>
-                    post.id === updatedPost.id ? updatedPost : post
-                  )
-                );
-                setUserPosts((prevUserPosts) =>
-                  prevUserPosts.map((post) =>
-                    post.id === updatedPost.id ? updatedPost : post
-                  )
-                );
-                closeDialog("editPost");
-              }}
             />
           )}
           {showNewPostDialog && (

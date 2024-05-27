@@ -30,12 +30,19 @@ const Feed = () => {
     setShowNewPostDialog(false);
   };
 
+  //filter posts by available or completed posts
+  const filteredPostsBy = Array.isArray(posts)
+    ? posts.filter((post) => post.availability === "Available")
+    : [];
+
   // Filter posts based on the search term
   const filteredPosts = searchTerm
-    ? posts.filter((post) =>
-        post.title ? post.title.toLowerCase().includes(searchTerm.toLowerCase()) : false
+    ? filteredPostsBy.filter((post) =>
+        post.title
+          ? post.title.toLowerCase().includes(searchTerm.toLowerCase())
+          : false
       )
-    : posts;
+    : filteredPostsBy;
 
   const addNewPost = async (newPost) => {
     setPosts((prevPosts) => [...prevPosts, newPost]);
