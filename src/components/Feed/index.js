@@ -75,7 +75,7 @@ const Feed = () => {
         )}
         <div className="posts">
           {filteredPosts.map((post) => (
-            <Link to={`/post/${post.id}`} key={post.id} className="card-link">
+            <Link to={`/books/${post.id}`} key={post.id} className="card-link">
               <div className="card">
                 <img src={`${serverBaseUrl}${post.image}`} alt={post.title} />
                 <div className="card-content">

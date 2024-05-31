@@ -130,3 +130,11 @@
   color: #ffffff;
   border-color: #333333;
 }
+
+.user-link {
+  text-decoration: none;
+  color: inherit;
+}
+.user-link:hover {
+  text-decoration: underline;
+}

@@ -266,7 +266,7 @@ const Profile = () => {
               ) : (
                 filteredPosts.map((post) => (
                   <div className="card" key={post.id}>
-                    <Link to={`/post/${post.id}`} className="card-link">
+                    <Link to={`/books/${post.id}`} className="card-link">
                       <img
                         src={`${serverBaseUrl}${post.imageUrl}`}
                         alt={post.title}

@@ -5,33 +5,33 @@ import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "./post.css";
+import api from "../../../api/axios";
 
 const serverBaseUrl = "http://localhost:5050";
 
 const PostPage = () => {
-  const { posts, setPosts, request, setRequest } = useContext(PostsContext);
+  // const { posts } = useContext(PostsContext); // Removed unnecessary context destructuring
   const { userData } = useContext(UserContext);
   const { user, isAuthenticated } = userData;
+  const { postId } = useParams();
+  const [post, setPost] = useState(null);
 
-  // const [status, setStatus] = useState("available");
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await api.get(`/books/${postId}`);
+        const p = response.data;
+        console.log(p);
+        setPost(p);
+      } catch (error) {
+        console.error("Error fetching book:", error);
+      }
+    };
 
-  const { postId } = useParams(); // Extracting post ID from URL params
-  const post = posts.find((post) => post.id === parseInt(postId)); // Find post by postId
+    fetchPost();
+  }, [postId]);
 
-  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFullView, setIsFullView] = useState(false);
-
-  // const handleNextImage = (e) => {
-  //   e.stopPropagation();
-  //   setCurrentImageIndex((prevIndex) => (prevIndex + 1) % post.images.length);
-  // };
-
-  // const handlePreviousImage = (e) => {
-  //   e.stopPropagation();
-  //   setCurrentImageIndex(
-  //     (prevIndex) => (prevIndex - 1 + post.images.length) % post.images.length
-  //   );
-  // };
 
   const handleGoBack = (e) => {
     e.stopPropagation();
@@ -53,52 +53,22 @@ const PostPage = () => {
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <div className="postInfo">
-          <p> {post.user}</p>
-          <p> {post.postDate}</p>
+          <Link to={`/users/${post.userId}`} className="user-link">
+            <p>{post.userName}</p>
+          </Link>
+          <p>{post.postDate}</p>
         </div>
       </div>
       <div
         className={`image-container ${isFullView ? "full-view" : ""}`}
         onClick={handleToggleFullView}
       >
-        {/* {post.images.map((image, index) => ( */}
-        <img
-          // key={index}
-          src={`${serverBaseUrl}${post.image}`}
-          alt={post.title}
-          // className={index === currentImageIndex ? "" : "hidden"}
-        />
-        {/* ))} */}
-        {/* <button
-          onClick={(e) => handlePreviousImage(e)}
-          className="slide-button previous"
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <button
-          onClick={(e) => handleNextImage(e)}
-          className="slide-button next"
-        >
-          <FontAwesomeIcon icon={faArrowRight} />
-        </button> */}
+        <img src={`${serverBaseUrl}${post.imageUrl}`} alt={post.title} />
       </div>
       <h1>{post.title}</h1>
-      {/* {user.books.some((book) => book.id === post.id) && (
-        <>
-          <label htmlFor="status">Status:</label>
-          <select
-            id="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="available">Available</option>
-            <option value="completed">Completed</option>
-          </select>
-        </>
-      )} */}
       <p>Condition: {post.condition}</p>
       <p>Description: {post.description}</p>
-      {isAuthenticated ? (
+      {isAuthenticated && user.books.some((book) => book.id === post.id) ? (
         <a
           href={`https://wa.me/${user.phoneNumber}?text=Hello%20World`}
           target="_blank"

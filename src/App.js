@@ -6,6 +6,7 @@ import SignUp from "./components/Login&SignUp/SignUp";
 import Landing from "./components/Landing";
 import Feed from "./components/Feed";
 import Profile from "./components/Profile/Profile";
+import UserProfile from "./components/Profile/UserProfile";
 import NewPost from "./components/Feed/newPost";
 import Post from "./components/Feed/Post";
 import About from "./components/About/About";
@@ -23,7 +24,8 @@ function App() {
             <Routes>
               <Route path="/home/*" element={<Feed />} />
               <Route exact path="/profile" element={<Profile />} />
-              <Route path="/post/:postId" element={<Post />} />
+              <Route path="/books/:postId" element={<Post />} />
+              <Route path="/users/:userId" element={<UserProfile />} />
               <Route exact path="/post" element={<NewPost />} />
               <Route exact path="/signup" element={<SignUp />} />
               <Route exact path="/login" element={<Login />} />
