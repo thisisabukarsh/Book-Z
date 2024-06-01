@@ -5,9 +5,6 @@ import "./Login.css";
 import Footer from "../../Footer";
 import UserContext from "../../Context/UserContext";
 
-// Importing dummy user data
-import { users } from "../user";
-
 const Login = () => {
   const { login } = useContext(UserContext);
   const location = useLocation();

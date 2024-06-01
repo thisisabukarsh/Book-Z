@@ -105,8 +105,11 @@ const Profile = () => {
       });
 
       if (response.status === 200 || response.status === 204) {
-        setPosts(posts.filter((post) => post.id !== parseInt(postId)));
-        setUserPosts(posts.filter((post) => post.id !== parseInt(postId)));
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        setUserPosts((prevUserPosts) =>
+          prevUserPosts.filter((post) => post.id !== postId)
+        );
+        console.log("Post deleted successfully");
       } else {
         console.error("Error deleting post:", response.statusText);
       }

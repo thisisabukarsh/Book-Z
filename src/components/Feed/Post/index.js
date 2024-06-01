@@ -68,7 +68,7 @@ const PostPage = () => {
       <p>Description: {post.description}</p>
       {isAuthenticated ? (
         <a
-          href={`https://wa.me/${user.phoneNumber}?text=Hello%20World`}
+          href={`https://wa.me/+962${user.phoneNumber}?text=Hello%20World`}
           target="_blank"
           rel="noopener noreferrer"
         >
