@@ -27,7 +27,7 @@ const Login = () => {
     } else {
       setIsVisible(false);
     }
-  }, []);
+  }, [currentPath]);
 
   useEffect(() => {
     setErrMsg("");

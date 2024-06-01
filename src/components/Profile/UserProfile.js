@@ -43,7 +43,7 @@ const UserProfile = () => {
   const handleRateUser = async (ratingData) => {
     // console.log(ratingData);
     try {
-      const response = await api.post(`/users/ratings/${userId}`, ratingData);
+      await api.post(`/users/ratings/${userId}`, ratingData);
       setIsRateDialogOpen(false);
       setTriggerFetch((prev) => !prev);
       setCurrentUser((prev) => ({

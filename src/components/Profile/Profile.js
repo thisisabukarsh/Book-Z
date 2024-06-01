@@ -18,7 +18,7 @@ const Profile = () => {
   const { userData, setUserData } = useContext(UserContext);
   const { isAuthenticated, user } = userData;
 
-  const { posts, setPosts, userPosts, setUserPosts } = useContext(PostsContext);
+  const { setPosts, userPosts, setUserPosts } = useContext(PostsContext);
   const [profilePhoto, setProfilePhoto] = useState(defaultPhoto);
 
   useEffect(() => {
