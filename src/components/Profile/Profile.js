@@ -5,7 +5,7 @@ import ResetPasswordDialog from "./Dialogs/ResetPasswordDialog";
 import EditUserInfoDialog from "./Dialogs/EditUserInfoDialog";
 import EditPostDialog from "./Dialogs/EditPostDialog";
 import { FaEdit, FaPlus, FaKey, FaTrash } from "react-icons/fa";
-import { PostsContext } from "../Context/PostsContext ";
+import { PostsContext } from "../Context/PostsContext";
 import UserContext from "../Context/UserContext";
 import Logout from "../Login&SignUp/Logout/Logout";
 import defaultPhoto from "../../assets/default.png";

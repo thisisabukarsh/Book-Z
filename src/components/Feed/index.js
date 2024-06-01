@@ -1,16 +1,15 @@
 import "./Feed.css";
-import { PostsContext } from "../Context/PostsContext ";
+import { PostsContext } from "../Context/PostsContext";
 import NewPost from "./newPost";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { useState, useContext, useEffect } from "react";
 import UserContext from "../Context/UserContext";
-import api from "../../api/axios";
 import { Link } from "react-router-dom";
 
 const serverBaseUrl = "http://localhost:5050";
 
 const Feed = () => {
-  const { posts, setPosts, userPosts, setUserPosts } = useContext(PostsContext);
+  const { posts, setPosts } = useContext(PostsContext);
   const { userData } = useContext(UserContext);
   const { isAuthenticated } = userData;
 

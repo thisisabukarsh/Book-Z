@@ -4,7 +4,11 @@
         "emailnote",
         "fontawesome",
         "fortawesome",
+        "noopener",
+        "noreferrer",
         "pwdnote",
-        "uidnote"
+        "uidnote",
+        "uploaduserphoto",
+        "withall"
     ]
 }

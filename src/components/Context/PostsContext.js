@@ -10,6 +10,7 @@ export const PostsProvider = ({ children }) => {
   const { user, isAuthenticated } = userData;
 
   const [posts, setPosts] = useState([]);
+  const [post, setPost] = useState([]);
 
   const [userPosts, setUserPosts] = useState([]);
 
@@ -27,6 +28,7 @@ export const PostsProvider = ({ children }) => {
         try {
           const response = await api.get(`users/withall/${user.id}`);
           setUserPosts(response.data.books);
+          console.log("uuuu", response.data);
         } catch (error) {
           console.error("Error fetching books:", error);
         }
@@ -34,10 +36,13 @@ export const PostsProvider = ({ children }) => {
     };
 
     fetchBooks();
+    // eslint-disable-next-line
   }, []);
 
   return (
-    <PostsContext.Provider value={{ posts, setPosts, userPosts, setUserPosts }}>
+    <PostsContext.Provider
+      value={{ posts, setPosts, userPosts, setUserPosts, post, setPost }}
+    >
       {children}
     </PostsContext.Provider>
   );

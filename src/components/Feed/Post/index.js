@@ -1,35 +1,34 @@
 import { useState, useContext, useEffect } from "react";
-import { PostsContext } from "../../Context/PostsContext ";
+import { PostsContext } from "../../Context/PostsContext";
 import UserContext from "../../Context/UserContext";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import "./post.css";
 import api from "../../../api/axios";
 
 const serverBaseUrl = "http://localhost:5050";
 
 const PostPage = () => {
-  // const { posts } = useContext(PostsContext); // Removed unnecessary context destructuring
+  const { post, setPost } = useContext(PostsContext); // Removed unnecessary context destructuring
   const { userData } = useContext(UserContext);
   const { user, isAuthenticated } = userData;
   const { postId } = useParams();
-  const [post, setPost] = useState(null);
+  // const [post, setPost] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await api.get(`/books/${postId}`);
-        const p = response.data;
-        console.log(p);
-        setPost(p);
+        console.log(response.data);
+        setPost(response.data);
       } catch (error) {
         console.error("Error fetching book:", error);
       }
     };
 
     fetchPost();
-  }, [postId]);
+  }, [postId, setPost]);
 
   const [isFullView, setIsFullView] = useState(false);
 
@@ -68,7 +67,7 @@ const PostPage = () => {
       <h1>{post.title}</h1>
       <p>Condition: {post.condition}</p>
       <p>Description: {post.description}</p>
-      {isAuthenticated && user.books.some((book) => book.id === post.id) ? (
+      {isAuthenticated ? (
         <a
           href={`https://wa.me/${user.phoneNumber}?text=Hello%20World`}
           target="_blank"

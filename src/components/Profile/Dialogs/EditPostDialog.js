@@ -1,5 +1,5 @@
 import "./dialog.css";
-import { PostsContext } from "../../Context/PostsContext ";
+import { PostsContext } from "../../Context/PostsContext";
 import { useContext } from "react";
 import api from "../../../api/axios";
 import { useState } from "react";

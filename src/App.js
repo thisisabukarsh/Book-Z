@@ -11,7 +11,7 @@ import NewPost from "./components/Feed/newPost";
 import Post from "./components/Feed/Post";
 import About from "./components/About/About";
 import "./App.css";
-import { PostsProvider } from "./components/Context/PostsContext ";
+import { PostsProvider } from "./components/Context/PostsContext";
 import { UserProvider } from "./components/Context/UserContext";
 
 function App() {

@@ -3,25 +3,26 @@ import Modal from "react-modal";
 import { Slider } from "@mui/material";
 
 const RateDialog = ({ isOpen, onRequestClose, onSubmit }) => {
-  const [rating, setRating] = useState(0);
+  const [RatingValue, setRating] = useState(0);
 
   const handleSubmit = () => {
-    onSubmit({ rating });
+    onSubmit({ RatingValue });
     onRequestClose();
   };
 
   return (
     <Modal
+      className={"dialog"}
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Rate User"
       ariaHideApp={false} // This line is to avoid app element is not defined warning
     >
-      <h2>Rate User</h2>
-      <div>
+      <div className="dialog-content">
+        <h2>Rate User</h2>
         <label>Rating:</label>
         <Slider
-          value={rating}
+          value={RatingValue}
           onChange={(e, newValue) => setRating(newValue)}
           min={1}
           max={5}
@@ -35,10 +36,11 @@ const RateDialog = ({ isOpen, onRequestClose, onSubmit }) => {
           ]}
           valueLabelDisplay="auto"
         />
+        <div className="buttons">
+          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={onRequestClose}>Cancel</button>
+        </div>
       </div>
-
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={onRequestClose}>Cancel</button>
     </Modal>
   );
 };

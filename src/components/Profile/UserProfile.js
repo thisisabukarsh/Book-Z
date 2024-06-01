@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import defaultPhoto from "../../assets/default.png";
+import UserContext from "../Context/UserContext";
+import { PostsContext } from "../Context/PostsContext";
 import "./UserProfile.css";
 import api from "../../api/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RateDialog from "./Dialogs/RatingDialog";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const UserProfile = () => {
   const { userId } = useParams();
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isRateDialogOpen, setIsRateDialogOpen] = useState(false);
-  const serverBaseUrl = "http://localhost:5050";
-
+  const { userData } = useContext(UserContext);
+  const { post } = useContext(PostsContext);
+  const { isAuthenticated, user } = userData;
   const [profilePhoto, setProfilePhoto] = useState(defaultPhoto);
+  const serverBaseUrl = "http://localhost:5050";
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await api.get(`/users/${userId}`);
-        setUser(response.data);
+        setCurrentUser(response.data);
         console.log(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -30,17 +34,23 @@ const UserProfile = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (user && user.image) {
-      setProfilePhoto(user.image);
+    if (currentUser && currentUser.image) {
+      setProfilePhoto(currentUser.image);
     }
-  }, [user]);
+  }, [currentUser]);
 
-  const handleRateUser = (ratingData) => {
-    // Handle rating submission logic here, for example, sending it to the server
-    console.log("Rating data:", ratingData);
+  const handleRateUser = async (ratingData) => {
+    console.log(ratingData);
+    try {
+      await api.post(`/users/ratings/${userId}`, ratingData);
+      setIsRateDialogOpen(false);
+      alert("Rating successfully");
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+    }
   };
 
-  if (!user) {
+  if (!currentUser) {
     return <div>Loading...</div>;
   }
   const handleGoBack = (e) => {
@@ -50,26 +60,32 @@ const UserProfile = () => {
 
   return (
     <div className="profile-v">
+      <button onClick={(e) => handleGoBack(e)} className="back-button">
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </button>
       <div className="profile-info">
-        <button onClick={(e) => handleGoBack(e)} className="back-button">
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
         <div className="profile-photo">
           <img src={`${serverBaseUrl}${profilePhoto}`} alt="Profile" />
         </div>
         <div className="info">
-          <h2>{user.username}</h2>
-          <p>Phone: {user.phoneNumber}</p>
-          <p>Email: {user.email}</p>
-          <p>Rating: {user.averageRating} / 5</p>
-          <div className="buttons">
-            <button onClick={() => setIsRateDialogOpen(true)}>
-              Rate <span>{user.username}</span>
-            </button>
-          </div>
+          <h2>{currentUser.username}</h2>
+          <p>Phone: {currentUser.phoneNumber}</p>
+          <p>Email: {currentUser.email}</p>
+          <p>Rating: {currentUser.averageRating} / 5</p>
+          {isAuthenticated && user.id !== post.userId ? (
+            <div className="buttons">
+              <button onClick={() => setIsRateDialogOpen(true)}>
+                Rate <span>{currentUser.username}</span>
+              </button>
+            </div>
+          ) : (
+            <div>
+              {" "}
+              Login to Rate <span>{currentUser.username}</span>
+            </div>
+          )}
         </div>
       </div>
-
       <RateDialog
         isOpen={isRateDialogOpen}
         onRequestClose={() => setIsRateDialogOpen(false)}
