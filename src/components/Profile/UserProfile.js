@@ -24,7 +24,7 @@ const UserProfile = () => {
       try {
         const response = await api.get(`/users/${userId}`);
         setCurrentUser(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -40,10 +40,14 @@ const UserProfile = () => {
   }, [currentUser]);
 
   const handleRateUser = async (ratingData) => {
-    console.log(ratingData);
+    // console.log(ratingData);
     try {
-      await api.post(`/users/ratings/${userId}`, ratingData);
+      const response = await api.post(`/users/ratings/${userId}`, ratingData);
       setIsRateDialogOpen(false);
+      setCurrentUser((prev) => ({
+        ...prev,
+        averageRating: response.data.ratingValue,
+      }));
       alert("Rating successfully");
     } catch (error) {
       console.error("Error submitting rating:", error);

@@ -10,17 +10,16 @@ import api from "../../../api/axios";
 const serverBaseUrl = "http://localhost:5050";
 
 const PostPage = () => {
-  const { post, setPost } = useContext(PostsContext); // Removed unnecessary context destructuring
+  const { post, setPost } = useContext(PostsContext);
   const { userData } = useContext(UserContext);
   const { user, isAuthenticated } = userData;
   const { postId } = useParams();
-  // const [post, setPost] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await api.get(`/books/${postId}`);
-        console.log(response.data);
+        // console.log(response.data);
         setPost(response.data);
       } catch (error) {
         console.error("Error fetching book:", error);
