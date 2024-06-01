@@ -13,6 +13,7 @@ const UserProfile = () => {
   const { userId } = useParams();
   const [currentUser, setCurrentUser] = useState(null);
   const [isRateDialogOpen, setIsRateDialogOpen] = useState(false);
+  const [triggerFetch, setTriggerFetch] = useState(false);
   const { userData } = useContext(UserContext);
   const { post } = useContext(PostsContext);
   const { isAuthenticated, user } = userData;
@@ -31,7 +32,7 @@ const UserProfile = () => {
     };
 
     fetchUser();
-  }, [userId]);
+  }, [userId, triggerFetch]);
 
   useEffect(() => {
     if (currentUser && currentUser.image) {
@@ -44,9 +45,10 @@ const UserProfile = () => {
     try {
       const response = await api.post(`/users/ratings/${userId}`, ratingData);
       setIsRateDialogOpen(false);
+      setTriggerFetch((prev) => !prev);
       setCurrentUser((prev) => ({
         ...prev,
-        averageRating: response.data.ratingValue,
+        averageRating: currentUser.averageRating,
       }));
       alert("Rating successfully");
     } catch (error) {
