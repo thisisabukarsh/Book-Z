@@ -12,7 +12,7 @@ const ResetPasswordDialog = ({ onClose }) => {
   const { userData, resetPassword } = useContext(UserContext);
   const { user } = userData;
 
-  const [currentPassword, setCurrentPassword] = useState("");
+  // const [currentPassword, setCurrentPassword] = useState("");
 
   //use state for PWd state
   const [pwd, setPwd] = useState("");
@@ -38,19 +38,20 @@ const ResetPasswordDialog = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "currentPassword") setCurrentPassword(value);
-    else if (name === "newPassword") setPwd(value);
+    // if (name === "currentPassword") setCurrentPassword(value);
+    if (name === "newPassword") setPwd(value);
     else if (name === "confirmPassword") setMatchPwd(value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentPassword !== user.password) {
-      alert("Current password is incorrect");
-      return;
-    }
+    // if (currentPassword !== user.password) {
+    //   alert("Current password is incorrect");
+    //   return;
+    // }
     if (validPwd && validMatch) {
       resetPassword(pwd, user.username);
+      alert("Password changed successfully");
       onClose();
     }
   };
@@ -60,7 +61,7 @@ const ResetPasswordDialog = ({ onClose }) => {
       <div className="dialog-content">
         <h2>Reset Password</h2>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="current_password">Current Password:</label>
+          {/* <label htmlFor="current_password">Current Password:</label>
           <input
             type="password"
             id="current_password"
@@ -70,7 +71,7 @@ const ResetPasswordDialog = ({ onClose }) => {
             className="form-control"
             required
             placeholder="Enter current password"
-          />
+          /> */}
           <label htmlFor="password">
             Password:{"  "}
             <span className={validPwd ? "valid" : "hide"}>
