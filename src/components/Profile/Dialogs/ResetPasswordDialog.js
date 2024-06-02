@@ -34,14 +34,15 @@ const ResetPasswordDialog = ({ onClose }) => {
     //here for the pwdMatch
     const match = pwd === matchPwd;
     setValidMatch(match);
+    // eslint-disable-next-line
   }, [pwd, matchPwd]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    // if (name === "currentPassword") setCurrentPassword(value);
-    if (name === "newPassword") setPwd(value);
-    else if (name === "confirmPassword") setMatchPwd(value);
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   // if (name === "currentPassword") setCurrentPassword(value);
+  //   if (name === "newPassword") setPwd(value);
+  //   else if (name === "confirmPassword") setMatchPwd(value);
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
