@@ -12,7 +12,7 @@ const serverBaseUrl = "http://localhost:5050";
 const PostPage = () => {
   const { post, setPost } = useContext(PostsContext);
   const { userData } = useContext(UserContext);
-  const { user, isAuthenticated } = userData;
+  const { isAuthenticated } = userData;
   const { postId } = useParams();
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const PostPage = () => {
       <p>Description: {post.description}</p>
       {isAuthenticated ? (
         <a
-          href={`https://wa.me/+962${user.phoneNumber}?text=Hello%20World`}
+          href={`https://wa.me/+962${post.phoneNumber}?text=Hello%20World`}
           target="_blank"
           rel="noopener noreferrer"
         >
